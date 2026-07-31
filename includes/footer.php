@@ -1,5 +1,5 @@
 <?php
-// --- includes/footer.php ---
+
 ?>
 <footer>
   <div class="footer-inner">

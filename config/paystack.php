@@ -1,5 +1,5 @@
 <?php
-// --- config/paystack.php ---
+
 
 define('PAYSTACK_SECRET_KEY', 'sk_test_REPLACE_WITH_REAL_KEY');
 

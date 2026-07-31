@@ -1,38 +1,54 @@
 <?php
-// --- auth/reset_password.php ---
 
 require_once dirname(__DIR__) . "/config/config.php";
 session_start();
 
-$token = sanitize_input($_GET['token'] ?? '');
 $error = '';
 
-if (empty($token)) { header("Location: login.php"); exit(); }
-
-$conn = get_db_connection();
-$stmt = $conn->prepare("SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()");
-$stmt->bind_param("s", $token);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-
-if (!$user) { $error = "This reset link is invalid or has expired."; }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) die("Invalid request.");
+
+    $name     = sanitize_input($_POST['name'] ?? '');
+    $email    = sanitize_input($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm  = $_POST['confirm']  ?? '';
-    if (strlen($password) < 8) {
+
+    if (empty($name) || empty($email)) {
+        $error = "Name and email are required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
+    } elseif (strlen($password) < 8) {
         $error = "Password must be at least 8 characters.";
     } elseif ($password !== $confirm) {
         $error = "Passwords do not match.";
     } else {
-        $hashed = hash_password($password);
-        $stmt   = $conn->prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?");
-        $stmt->bind_param("si", $hashed, $user['id']);
+        $conn = get_db_connection();
+
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
-        set_flash('success', 'Password reset. You can now log in.');
-        header("Location: login.php");
-        exit();
+
+        if ($stmt->get_result()->num_rows > 0) {
+            $error = "An account with that email already exists.";
+        } else {
+            $hashed = hash_password($password);
+            $stmt   = $conn->prepare(
+                "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'customer')"
+            );
+            $stmt->bind_param("sss", $name, $email, $hashed);
+
+            if ($stmt->execute()) {
+                $_SESSION['user_id'] = $conn->insert_id;
+                $_SESSION['name']    = $name;
+                $_SESSION['role']    = 'customer';
+                $_SESSION['email']   = $email;
+
+                header("Location: " . BASE_URL . "user/dashboard.php");
+                exit();
+            } else {
+                $error = "Registration failed. Please try again.";
+            }
+        }
     }
 }
 ?>
@@ -41,32 +57,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Password — Glow Co.</title>
+  <title>Register — Glow Co.</title>
   <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="auth-wrapper">
   <div class="auth-card">
-    <h2>New Password</h2>
+    <h2>Create Account</h2>
     <?php if ($error): ?>
       <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
-    <?php if ($user): ?>
-      <form method="POST" action="reset_password.php?token=<?= htmlspecialchars($token) ?>">
-        <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
-        <div>
-          <label>New Password</label>
-          <input type="password" name="password" placeholder="Min. 8 characters" required minlength="8">
-        </div>
-        <div>
-          <label>Confirm Password</label>
-          <input type="password" name="confirm" placeholder="Repeat password" required>
-        </div>
-        <button type="submit">Set New Password</button>
-      </form>
-    <?php endif; ?>
-    <p><a href="login.php">Back to Login</a></p>
+    <form method="POST" action="register.php">
+      <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
+      <div>
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Your name" required
+               value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
+      </div>
+      <div>
+        <label>Email</label>
+        <input type="email" name="email" placeholder="your@email.com" required
+               value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Min. 8 characters" required minlength="8">
+      </div>
+      <div>
+        <label>Confirm Password</label>
+        <input type="password" name="confirm" placeholder="Repeat password" required>
+      </div>
+      <button type="submit">Create Account</button>
+    </form>
+    <p>Already have an account? <a href="login.php">Login</a></p>
   </div>
 </div>
 <div class="toast" id="toast"></div>

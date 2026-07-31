@@ -1,5 +1,5 @@
 <?php
-// --- includes/flash.php ---
+
 
 function set_flash(string $type, string $message): void {
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];
