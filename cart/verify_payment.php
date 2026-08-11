@@ -1,9 +1,10 @@
 <?php
+// --- cart/verify_payment.php ---
 
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
 require_once ROOT_PATH . 'config/paystack.php';
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 $ref = sanitize_input($_GET['reference'] ?? '');
 
@@ -12,22 +13,10 @@ if (empty($ref)) {
     exit();
 }
 
-$url = "https://api.paystack.co/transaction/verify/" . rawurlencode($ref);
-$ch  = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Authorization: Bearer " . PAYSTACK_SECRET_KEY,
-]);
-$response = curl_exec($ch);
-curl_close($ch);
+$tx = verify_paystack_transaction($ref);
 
-$data = json_decode($response, true);
-
-if (
-    isset($data['data']['status']) &&
-    $data['data']['status'] === 'success'
-) {
-    $order_id = (int)($data['data']['metadata']['order_id'] ?? 0);
+if ($tx && ($tx['status'] ?? '') === 'success') {
+    $order_id = (int)($tx['metadata']['order_id'] ?? 0);
     $conn     = get_db_connection();
 
     $stmt = $conn->prepare(

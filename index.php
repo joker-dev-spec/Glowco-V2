@@ -13,6 +13,7 @@ $featured = $conn->query(
 $page_title = 'Glow Co. — Premium Body Creams';
 // header.php outputs <header class="scrolled"> — strip scrolled for homepage so the transition fires
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <section class="hero">
@@ -65,6 +66,7 @@ include ROOT_PATH . 'includes/header.php';
         <?php endif; ?>
         <div class="product-overlay">
           <form method="POST" action="<?= BASE_URL ?>cart/add.php">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
             <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
             <input type="hidden" name="quantity" value="1">
             <button type="submit" class="quick-add">Quick Add</button>
@@ -82,11 +84,13 @@ include ROOT_PATH . 'includes/header.php';
           <div class="product-actions">
             <?php if (is_logged_in()): ?>
               <form method="POST" action="<?= BASE_URL ?>wishlist/add.php" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                 <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                 <button type="submit" class="wish-btn" title="Save to wishlist">♡</button>
               </form>
             <?php endif; ?>
             <form method="POST" action="<?= BASE_URL ?>cart/add.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
               <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
               <input type="hidden" name="quantity" value="1">
               <button type="submit" class="icon-cart" title="Add to cart">

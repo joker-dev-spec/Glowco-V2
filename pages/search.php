@@ -22,6 +22,7 @@ if ($q !== '') {
 
 $page_title = 'Search - Glowco';
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 <main>
     <h1>Search Results<?= $q ? ' for "' . htmlspecialchars($q) . '"' : '' ?></h1>
@@ -45,9 +46,10 @@ include ROOT_PATH . 'includes/header.php';
                     </a>
                 <?php endif; ?>
                 <h3><a href="product.php?id=<?= $p['id'] ?>"><?= htmlspecialchars($p['name']) ?></a></h3>
-                <p>$<?= number_format($p['price'], 2) ?></p>
+                <p>₦<?= number_format($p['price'], 2) ?></p>
                 <?php if ($p['stock'] > 0): ?>
                     <form method="POST" action="<?= BASE_URL ?>cart/add.php">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                         <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                         <input type="hidden" name="quantity" value="1">
                         <button type="submit">Add to Cart</button>

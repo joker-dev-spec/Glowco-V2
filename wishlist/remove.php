@@ -1,9 +1,10 @@
 <?php
 // --- wishlist/remove.php ---
+
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'includes/user_auth.php';
 
-$id      = (int)($_GET['id'] ?? 0);
+$id      = (int)($_REQUEST['id'] ?? 0);
 $user_id = $_SESSION['user_id'];
 $conn    = get_db_connection();
 
@@ -12,5 +13,5 @@ $stmt->bind_param("ii", $id, $user_id);
 $stmt->execute();
 
 set_flash('success', 'Removed from wishlist.');
-header("Location: view.php");
+header("Location: " . BASE_URL . "wishlist/view.php");
 exit();

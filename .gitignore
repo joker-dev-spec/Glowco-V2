@@ -1,0 +1,18 @@
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Uploaded product images (keep the folder, ignore files)
+uploads/*
+!uploads/.gitkeep
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+
+# Deploy tooling
+.nixpacks/
+.vscode/
+.idea/

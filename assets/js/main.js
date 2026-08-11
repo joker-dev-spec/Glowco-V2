@@ -2,6 +2,24 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ── Mobile menu toggle ─────────────────────────────────────────
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const navEl   = document.querySelector('header nav');
+    if (menuBtn && navEl) {
+        menuBtn.addEventListener('click', () => {
+            const open = navEl.classList.toggle('mobile-open');
+            menuBtn.classList.toggle('open', open);
+            menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        navEl.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                navEl.classList.remove('mobile-open');
+                menuBtn.classList.remove('open');
+                menuBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
     // ── Flash auto-dismiss ──────────────────────────────────────────
     const flashes = document.querySelectorAll('.flash');
     flashes.forEach(el => {

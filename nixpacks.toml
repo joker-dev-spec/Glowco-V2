@@ -1,0 +1,8 @@
+# ------------------------------------------------------------------
+# Railway config (Nixpacks)
+# Deploy:  railway login && railway up
+# Add a MySQL database via the Railway dashboard and connect it, then
+# set APP_URL to your generated domain.
+# ------------------------------------------------------------------
+[nixpacks]
+providers = ["php"]

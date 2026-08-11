@@ -30,13 +30,13 @@ include ROOT_PATH . 'includes/header.php';
 
 <div class="user-dashboard">
   <p class="section-eyebrow">Your account</p>
-  <h1>Welcome back, <?= htmlspecialchars(explode(' ', $user['name'])[0]) ?>.</h1>
+  <h1>Welcome back, <?= htmlspecialchars(strtok($user['name'] ?? 'there', ' ') ?: 'there') ?>.</h1>
 
   <div style="display:grid;grid-template-columns:300px 1fr;gap:40px;margin-top:48px;align-items:start;">
 
     <div style="background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);text-align:center;">
       <div style="width:72px;height:72px;background:var(--pink-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;">
-        <?= strtoupper(substr($user['name'], 0, 1)) ?>
+        <?= strtoupper(substr($user['name'] ?? 'G', 0, 1)) ?>
       </div>
       <h3 style="font-size:1.3rem;color:var(--plum);margin-bottom:4px;"><?= htmlspecialchars($user['name']) ?></h3>
       <p style="font-size:.85rem;color:var(--text-soft);margin-bottom:20px;"><?= htmlspecialchars($user['email']) ?></p>

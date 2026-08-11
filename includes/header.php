@@ -59,6 +59,9 @@ $flash = get_flash();
         <?php endif; ?>
       </ul>
     </nav>
+    <button id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 

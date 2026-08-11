@@ -65,5 +65,16 @@ CREATE TABLE wishlist (
     UNIQUE KEY unique_wishlist_item (user_id, product_id)
 ) ENGINE=InnoDB;
 
+-- Default admin. Password: REDACTED  (change this on first login!)
 INSERT INTO users (name, email, password_hash, role)
-VALUES ('Admin', 'admin@example.com', '$2y$10$placeholderHashReplaceOnFirstRun', 'admin');
+VALUES ('Admin', 'admin@example.com', '$2y$12$REDACTED-ROTATE-ON-DEPLOY', 'admin');
+
+-- Sample products so the shop isn't empty on first run
+-- (image_path values reference the bundled files in uploads/)
+INSERT INTO products (name, description, price, stock, image_path, category) VALUES
+('Velvet Shea Body Cream', 'Ultra-rich whipped shea butter cream for deep, lasting moisture. 100% natural butters.', 8500.00, 25, 'uploads/prod_6a4d2a306f7096.74274017.webp', 'Body Lotion'),
+('Nectar Glow Body Lotion', 'Lightweight daily lotion with vitamin E and jojoba oil for a soft, radiant finish.', 7500.00, 40, 'uploads/prod_6a4d2b0f801252.45130953.jpg', 'Body Lotion'),
+('Midnight Oud Perfume Oil', 'Warm, long-lasting oud and amber fragrance oil. 15ml roll-on.', 12000.00, 15, 'uploads/prod_6a4d2c089c6b54.43595501.jpg', 'Perfume'),
+('Rose Nectar Perfume Oil', 'Soft rose and vanilla blend — romantic, everyday luxury. 15ml roll-on.', 11500.00, 20, 'uploads/prod_6a4d2c28e55f19.30530367.jpg', 'Perfume'),
+('Coconut Cloud Body Butter', 'Whipped coconut & cocoa butter for extra-dry skin. Melts on contact.', 9800.00, 18, 'uploads/prod_6a4d2c5572bd00.62536518.webp', 'Body Lotion'),
+('Amber Nights Perfume Oil', 'Seductive amber, sandalwood and musk. Perfect for evenings out. 15ml roll-on.', 13500.00, 10, 'uploads/prod_6a4d2c74ecb9d5.41885227.webp', 'Perfume');

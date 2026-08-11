@@ -20,6 +20,7 @@ $rows  = $items->fetch_all(MYSQLI_ASSOC);
 
 $page_title = 'My Wishlist — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <div class="wishlist-page">
@@ -62,6 +63,7 @@ include ROOT_PATH . 'includes/header.php';
               <div class="product-actions">
                 <?php if ($row['stock'] > 0): ?>
                   <form method="POST" action="<?= BASE_URL ?>cart/add.php" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                     <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
                     <input type="hidden" name="quantity" value="1">
                     <button type="submit" class="icon-cart" title="Add to cart">
@@ -77,24 +79,23 @@ include ROOT_PATH . 'includes/header.php';
                 <?php endif; ?>
               </div>
             </div>
-            <a href="<?= BASE_URL ?>wishlist/remove.php?id=<?= $row['wishlist_id'] ?>"
-               style="display:block;margin-top:10px;font-size:.78rem;color:var(--pink-deep);font-weight:600;">
-              Remove
-            </a>
+            <form method="POST" action="<?= BASE_URL ?>wishlist/remove.php"
+                  style="display:block;margin-top:10px;" data-inline>
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+              <input type="hidden" name="id" value="<?= (int)$row['wishlist_id'] ?>">
+              <button type="submit"
+                      style="background:none;border:none;padding:0;font-size:.78rem;color:var(--pink-deep);font-weight:600;text-decoration:underline;">
+                Remove
+              </button>
+            </form>
           </div>
         </div>
       <?php endforeach; ?>
     </div>
 
     <div style="margin-top:32px;text-align:right;">
-      <form method="POST" action="<?= BASE_URL ?>cart/add.php" id="addAllForm">
-        <input type="hidden" name="bulk" value="1">
-        <?php foreach ($rows as $row): ?>
-          <input type="hidden" name="product_ids[]" value="<?= $row['product_id'] ?>">
-        <?php endforeach; ?>
-      </form>
       <a href="<?= BASE_URL ?>pages/shop.php" class="btn-primary"
-         style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);margin-right:12px;">
+         style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
         Continue Shopping
       </a>
     </div>

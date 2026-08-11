@@ -16,12 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
 
     if ($stmt->get_result()->num_rows === 1) {
-        $token   = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', time() + 3600);
-        $stmt    = $conn->prepare(
-            "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?"
+        $token = bin2hex(random_bytes(32));
+        // Expiry uses MySQL NOW() so it stays consistent with the
+        // `reset_token_expires > NOW()` check regardless of PHP/DB timezones.
+        $stmt = $conn->prepare(
+            "UPDATE users SET reset_token = ?, reset_token_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?"
         );
-        $stmt->bind_param("sss", $token, $expires, $email);
+        $stmt->bind_param("ss", $token, $email);
         $stmt->execute();
 
         $reset_link = BASE_URL . "auth/reset_password.php?token={$token}";

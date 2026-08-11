@@ -62,7 +62,7 @@ include ROOT_PATH . 'includes/header.php';
         <p id="resultDesc"></p>
         <div id="resultProduct" style="margin:24px 0;background:var(--pink-soft);border-radius:16px;padding:20px;"></div>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-          <button class="btn-primary" id="resultCartBtn">Add to Cart</button>
+          <button class="btn-primary" id="resultCartBtn">View Product</button>
           <a href="<?= BASE_URL ?>pages/shop.php" class="btn-primary"
              style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
             See All Products
@@ -180,10 +180,8 @@ function showResult() {
     <div style="color:var(--pink-deep);font-family:var(--font-display);font-size:1.2rem;font-weight:600;">₦${Number(rec.price).toLocaleString('en-NG')}</div>`;
 
   document.getElementById('resultCartBtn').onclick = () => {
-    const toast = document.getElementById('toast');
-    toast.textContent = '✓ ' + rec.name + ' added to cart';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
+    const q = encodeURIComponent(rec.name);
+    window.location.href = '<?= BASE_URL ?>pages/shop.php?q=' + q;
   };
 }
 

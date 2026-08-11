@@ -1,0 +1,35 @@
+# ------------------------------------------------------------------
+# Render blueprint — deploy as a Web Service
+#   1. Push this repo to GitHub and "New +" > Blueprint
+#   2. Render reads this file automatically
+#   3. Add your own MySQL (e.g. Render PostgreSQL won't work — use
+#      Railway MySQL / PlanetScale / any MySQL) and set env vars below.
+#
+# If you don't use a blueprint, create a manual Web Service:
+#   Environment: Docker
+#   Build Command: (leave default)
+#   Start Command: bash start.sh
+# ------------------------------------------------------------------
+services:
+  - type: web
+    name: glowco
+    env: docker
+    buildCommand: ""
+    startCommand: bash start.sh
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: APP_URL
+        value: https://glowco.onrender.com
+      - key: DB_HOST
+        sync: false      # set in dashboard
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false

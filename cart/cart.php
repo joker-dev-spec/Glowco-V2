@@ -1,4 +1,5 @@
 <?php
+// --- cart/cart.php ---
 
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'includes/user_auth.php';
@@ -24,8 +25,12 @@ while ($row = $items->fetch_assoc()) {
     $rows[] = $row;
 }
 
+$shipping = $total >= 15000 ? 0 : 1500;
+$grand    = $total + $shipping;
+
 $page_title = 'Your Cart — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <div class="cart-page">
@@ -45,21 +50,32 @@ include ROOT_PATH . 'includes/header.php';
         <div class="cart-items-list">
           <?php foreach ($rows as $row): ?>
             <div class="cart-item">
-              <img src="<?= $row['image_path'] ? BASE_URL . htmlspecialchars($row['image_path']) : '' ?>"
-                   alt="<?= htmlspecialchars($row['name']) ?>"
-                   onerror="this.style.background='var(--pink-soft)';this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect fill=%22%23FDE0E8%22 width=%2280%22 height=%2280%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2228%22%3E🧴%3C/text%3E%3C/svg%3E'">
+              <?php if (!empty($row['image_path'])): ?>
+                <img src="<?= BASE_URL . htmlspecialchars($row['image_path']) ?>"
+                     alt="<?= htmlspecialchars($row['name']) ?>"
+                     onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect fill=%22%23FDE0E8%22 width=%2280%22 height=%2280%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2228%22>🧴</text></svg>'">
+              <?php else: ?>
+                <div style="width:80px;height:80px;background:var(--pink-soft);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">🧴</div>
+              <?php endif; ?>
               <div class="cart-item-info">
-                <h3><?= htmlspecialchars($row['name']) ?></h3>
+                <h3>
+                  <a href="<?= BASE_URL ?>pages/product.php?id=<?= (int)$row['product_id'] ?>"
+                     style="color:var(--plum);"><?= htmlspecialchars($row['name']) ?></a>
+                </h3>
                 <p>₦<?= number_format($row['price'], 2) ?> each</p>
               </div>
               <div class="qty-controls">
-                <span class="qty-display">Qty: <?= $row['quantity'] ?></span>
+                <span class="qty-display">Qty: <?= (int)$row['quantity'] ?></span>
               </div>
               <div style="font-weight:600;color:var(--plum);min-width:90px;text-align:right;">
                 ₦<?= number_format($row['subtotal'], 2) ?>
               </div>
-              <a href="<?= BASE_URL ?>cart/remove.php?id=<?= $row['id'] ?>"
-                 class="remove-btn" title="Remove">✕</a>
+              <form method="POST" action="<?= BASE_URL ?>cart/remove.php" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+                <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+                <button type="submit" class="remove-btn" title="Remove"
+                        data-confirm="Remove this item from your cart?">✕</button>
+              </form>
             </div>
           <?php endforeach; ?>
         </div>
@@ -83,13 +99,13 @@ include ROOT_PATH . 'includes/header.php';
         </div>
         <div class="summary-row">
           <span>Shipping</span>
-          <span style="color:<?= $total >= 15000 ? '#2e7d32' : 'var(--text-soft)' ?>">
-            <?= $total >= 15000 ? 'Free' : '₦1,500' ?>
+          <span style="color:<?= $shipping === 0 ? '#2e7d32' : 'var(--text-soft)' ?>">
+            <?= $shipping === 0 ? 'Free' : '₦' . number_format($shipping, 2) ?>
           </span>
         </div>
         <div class="summary-row total">
           <span>Total</span>
-          <span>₦<?= number_format($total >= 15000 ? $total : $total + 1500, 2) ?></span>
+          <span>₦<?= number_format($grand, 2) ?></span>
         </div>
 
         <a href="<?= BASE_URL ?>cart/checkout.php" class="btn-primary"

@@ -56,6 +56,7 @@ if ($q !== '') {
 
 $page_title = 'Shop — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <section class="shop-hero">
@@ -88,6 +89,7 @@ include ROOT_PATH . 'includes/header.php';
 function render_product_card($p) {
     $base = BASE_URL;
     $logged_in = is_logged_in();
+    $csrf_token = $GLOBALS['csrf'] ?? generate_csrf_token();
     ob_start();
 ?>
   <div class="product-card">
@@ -106,6 +108,7 @@ function render_product_card($p) {
       <?php if ($p['stock'] > 0): ?>
         <div class="product-overlay">
           <form method="POST" action="<?= $base ?>cart/add.php">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
             <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
             <input type="hidden" name="quantity" value="1">
             <button type="submit" class="quick-add">Quick Add</button>
@@ -127,11 +130,13 @@ function render_product_card($p) {
           <?php if ($p['stock'] > 0): ?>
             <?php if ($logged_in): ?>
               <form method="POST" action="<?= $base ?>wishlist/add.php" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                 <button type="submit" class="wish-btn" title="Save to wishlist">♡</button>
               </form>
             <?php endif; ?>
             <form method="POST" action="<?= $base ?>cart/add.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
               <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
               <input type="hidden" name="quantity" value="1">
               <button type="submit" class="icon-cart" title="Add to cart">
