@@ -67,7 +67,7 @@ $csrf = generate_csrf_token();
               <div class="qty-controls">
                 <span class="qty-display">Qty: <?= (int)$row['quantity'] ?></span>
               </div>
-              <div style="font-weight:600;color:var(--plum);min-width:90px;text-align:right;">
+              <div class="cart-item__subtotal" style="font-weight:600;color:var(--plum);min-width:90px;text-align:right;">
                 ₦<?= number_format($row['subtotal'], 2) ?>
               </div>
               <form method="POST" action="<?= BASE_URL ?>cart/remove.php" style="display:inline;">

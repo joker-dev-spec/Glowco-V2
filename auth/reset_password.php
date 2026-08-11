@@ -51,13 +51,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - Glowco</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body>
+<div class="auth-wrapper">
+  <div class="auth-card">
     <form method="POST" action="reset_password.php?token=<?= htmlspecialchars($token) ?>">
         <h2>Reset Password</h2>
-        <?php if ($error): ?><p class="error"><?= $error ?></p><?php endif; ?>
+        <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <?php if ($user): ?>
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
             <input type="password" name="password" placeholder="New Password" required minlength="8">
@@ -66,5 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
         <?php endif; ?>
         <p><a href="login.php">Back to Login</a></p>
     </form>
+  </div>
+</div>
 </body>
 </html>

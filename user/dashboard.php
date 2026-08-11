@@ -32,7 +32,7 @@ include ROOT_PATH . 'includes/header.php';
   <p class="section-eyebrow">Your account</p>
   <h1>Welcome back, <?= htmlspecialchars(strtok($user['name'] ?? 'there', ' ') ?: 'there') ?>.</h1>
 
-  <div style="display:grid;grid-template-columns:300px 1fr;gap:40px;margin-top:48px;align-items:start;">
+  <div class="profile-layout">
 
     <div style="background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow);text-align:center;">
       <div style="width:72px;height:72px;background:var(--pink-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem;">

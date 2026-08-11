@@ -86,7 +86,7 @@ include ROOT_PATH . 'includes/admin_header.php';
         <textarea name="description"><?= htmlspecialchars($product['description'] ?? '') ?></textarea>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-row-2">
         <div>
           <label>Price (₦) *</label>
           <input type="number" name="price" value="<?= $product['price'] ?>" step="0.01" min="0" required>

@@ -47,7 +47,7 @@ include ROOT_PATH . 'includes/admin_header.php';
   <a href="<?= BASE_URL ?>admin/orders.php" style="font-size:.85rem;color:var(--text-soft);display:inline-block;margin-bottom:24px;">← Back to orders</a>
 
   <div class="admin-form">
-    <div style="background:var(--pink-soft);border-radius:var(--radius);padding:20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="background:var(--pink-soft);border-radius:var(--radius);padding:20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div>
         <p style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-soft);margin-bottom:4px;">Order Total</p>
         <p style="font-family:var(--font-display);font-size:1.5rem;font-weight:600;color:var(--plum);">₦<?= number_format($order['total_amount'], 2) ?></p>

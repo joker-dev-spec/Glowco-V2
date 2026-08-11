@@ -19,11 +19,11 @@ include ROOT_PATH . 'includes/header.php';
 $csrf = generate_csrf_token();
 ?>
 
-<section class="page-hero" style="padding:140px 40px 40px;text-align:left;">
+<section class="page-hero" style="text-align:left;">
   <p class="section-eyebrow"><?= htmlspecialchars($product['category'] ?? 'Product') ?></p>
 </section>
 
-<section style="max-width:1100px;margin:0 auto;padding:0 40px 100px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;">
+<section class="product-detail">
   <div>
     <?php if ($product['image_path']): ?>
       <img src="<?= BASE_URL . htmlspecialchars($product['image_path']) ?>"
