@@ -1,8 +1,11 @@
 # ------------------------------------------------------------------
-# Railway config (Nixpacks)
-# Deploy:  railway login && railway up
-# Add a MySQL database via the Railway dashboard and connect it, then
-# set APP_URL to your generated domain.
+# Railway / Nixpacks config (fallback — the Dockerfile takes priority
+# and is the recommended path, since it guarantees the mysqli extension).
 # ------------------------------------------------------------------
-[nixpacks]
 providers = ["php"]
+
+# Nixpacks PHP uses nginx on port 80; Railway injects PORT. Let nginx use it.
+variables = { NIXPACKS_PHP_ROOT_DIR = "/app" }
+
+[start]
+cmd = "bash start.sh"
