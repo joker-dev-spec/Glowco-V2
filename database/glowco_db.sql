@@ -41,6 +41,7 @@ CREATE TABLE orders (
     total_amount DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'paid', 'shipped', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
     paystack_ref VARCHAR(100) DEFAULT NULL,
+    payment_ref VARCHAR(100) DEFAULT NULL,
     shipping_name VARCHAR(150) DEFAULT NULL,
     shipping_phone VARCHAR(30) DEFAULT NULL,
     shipping_address VARCHAR(255) DEFAULT NULL,

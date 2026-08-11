@@ -7,7 +7,7 @@ $conn    = get_db_connection();
 $user_id = $_SESSION['user_id'];
 
 $stmt = $conn->prepare(
-    "SELECT id, total_amount, status, paystack_ref, created_at
+    "SELECT id, total_amount, status, payment_ref, created_at
      FROM orders WHERE user_id = ? ORDER BY created_at DESC"
 );
 $stmt->bind_param("i", $user_id);
@@ -63,9 +63,12 @@ include ROOT_PATH . 'includes/header.php';
             <?php endwhile; ?>
           </ul>
 
-          <?php if ($order['paystack_ref']): ?>
+          <?php if ($order['payment_ref']): ?>
             <div style="padding:12px 20px;font-size:.78rem;color:var(--text-soft);border-top:1px solid var(--pink-soft);">
-              Ref: <?= htmlspecialchars($order['paystack_ref']) ?>
+              Payment ref: <?= htmlspecialchars($order['payment_ref']) ?>
+              <?php if ($order['status'] === 'pending'): ?>
+                <span style="color:var(--gold);font-weight:600;">— awaiting confirmation</span>
+              <?php endif; ?>
             </div>
           <?php endif; ?>
         </div>

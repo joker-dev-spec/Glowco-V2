@@ -4,7 +4,6 @@
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
 require_once ROOT_PATH . "includes/user_auth.php";
-require_once ROOT_PATH . "config/paystack.php";
 
 $conn    = get_db_connection();
 $user_id = $_SESSION['user_id'];
@@ -67,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
             }
 
+            $stmt = $conn->prepare("DELETE FROM cart_items WHERE user_id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+
             $conn->commit();
         } catch (Exception $e) {
             $conn->rollback();
@@ -76,18 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        $email = $_SESSION['email'] ?? '';
-        if (empty($email)) {
-            $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $email = $stmt->get_result()->fetch_assoc()['email'] ?? '';
-            $_SESSION['email'] = $email;
-        }
-
-        $ref = initialize_paystack_transaction($email, $total, $order_id);
-        $redirect = $ref['authorization_url'] ?? (BASE_URL . "cart/cart.php");
-        header("Location: " . $redirect);
+        set_flash('success', "Order #{$order_id} placed! Transfer the total and confirm payment to complete your order.");
+        header("Location: " . BASE_URL . "cart/pay.php?order_id={$order_id}");
         exit();
     }
 }
@@ -151,8 +144,11 @@ $csrf = generate_csrf_token();
         </div>
 
         <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;">
-          Pay ₦<?= number_format($total, 2) ?> &amp; Place Order
+          Place Order — Transfer ₦<?= number_format($total, 2) ?>
         </button>
+        <p style="font-size:.78rem;color:var(--text-soft);margin-top:10px;text-align:center;">
+          You'll get OPay &amp; Access Bank details to transfer to. No card needed.
+        </p>
       </form>
     </div>
 

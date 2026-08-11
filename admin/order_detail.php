@@ -44,7 +44,7 @@ include ROOT_PATH . 'includes/admin_header.php';
       <div class="summary-row"><span>Status</span><span class="status status--<?= $order['status'] ?>"><?= ucfirst($order['status']) ?></span></div>
       <div class="summary-row"><span>Total</span><span style="font-weight:700;color:var(--plum);">₦<?= number_format($order['total_amount'], 2) ?></span></div>
       <div class="summary-row"><span>Date</span><span><?= date('M j, Y g:ia', strtotime($order['created_at'])) ?></span></div>
-      <div class="summary-row"><span>Paystack Ref</span><span style="font-size:.78rem;"><?= htmlspecialchars($order['paystack_ref'] ?? '—') ?></span></div>
+      <div class="summary-row"><span>Payment Ref</span><span style="font-size:.78rem;"><?= htmlspecialchars($order['payment_ref'] ?? '—') ?></span></div>
       <div style="margin-top:20px;">
         <a href="<?= BASE_URL ?>admin/update_status.php?id=<?= $id ?>" class="btn-primary" style="font-size:.82rem;padding:10px 18px;">Update Status</a>
       </div>

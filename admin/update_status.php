@@ -6,7 +6,7 @@ require_once ROOT_PATH . 'includes/admin_auth.php';
 $id   = (int)($_GET['id'] ?? 0);
 $conn = get_db_connection();
 
-$stmt = $conn->prepare("SELECT id, status, total_amount FROM orders WHERE id = ?");
+$stmt = $conn->prepare("SELECT id, status, total_amount, payment_ref FROM orders WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $order = $stmt->get_result()->fetch_assoc();
@@ -30,6 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
         $stmt->bind_param("si", $new_status, $id);
         if ($stmt->execute()) {
+            if ($new_status === 'paid' && $order['status'] !== 'paid') {
+                $stmt = $conn->prepare("SELECT product_id, quantity FROM order_items WHERE order_id = ?");
+                $stmt->bind_param("i", $id);
+                $stmt->execute();
+                $items = $stmt->get_result();
+                $dec   = $conn->prepare("UPDATE products SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
+                while ($it = $items->fetch_assoc()) {
+                    $dec->bind_param("ii", $it['quantity'], $it['product_id']);
+                    $dec->execute();
+                }
+            }
             set_flash('success', "Order #$id updated to " . ucfirst($new_status) . ".");
             header("Location: orders.php");
             exit();
@@ -55,6 +66,9 @@ include ROOT_PATH . 'includes/admin_header.php';
       <div style="text-align:right;">
         <p style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-soft);margin-bottom:4px;">Current Status</p>
         <span class="status status--<?= $order['status'] ?>"><?= ucfirst($order['status']) ?></span>
+        <?php if (!empty($order['payment_ref'])): ?>
+          <p style="font-size:.75rem;color:var(--text-soft);margin-top:8px;">Ref: <?= htmlspecialchars($order['payment_ref']) ?></p>
+        <?php endif; ?>
       </div>
     </div>
 

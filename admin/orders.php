@@ -9,7 +9,7 @@ $status_filter  = sanitize_input($_GET['status'] ?? '');
 
 if ($status_filter && in_array($status_filter, $valid_statuses)) {
     $stmt = $conn->prepare(
-        "SELECT o.id, u.name, u.email, o.total_amount, o.status, o.paystack_ref, o.created_at
+        "SELECT o.id, u.name, u.email, o.total_amount, o.status, o.payment_ref, o.created_at
          FROM orders o JOIN users u ON o.user_id = u.id
          WHERE o.status = ? ORDER BY o.created_at DESC"
     );
@@ -18,7 +18,7 @@ if ($status_filter && in_array($status_filter, $valid_statuses)) {
     $orders = $stmt->get_result();
 } else {
     $orders = $conn->query(
-        "SELECT o.id, u.name, u.email, o.total_amount, o.status, o.paystack_ref, o.created_at
+        "SELECT o.id, u.name, u.email, o.total_amount, o.status, o.payment_ref, o.created_at
          FROM orders o JOIN users u ON o.user_id = u.id
          ORDER BY o.created_at DESC"
     );
@@ -68,7 +68,7 @@ include ROOT_PATH . 'includes/admin_header.php';
             <td style="color:var(--text-soft);font-size:.82rem;"><?= htmlspecialchars($row['email']) ?></td>
             <td style="font-weight:600;">₦<?= number_format($row['total_amount'], 2) ?></td>
             <td><span class="status status--<?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
-            <td style="color:var(--text-soft);font-size:.78rem;"><?= htmlspecialchars($row['paystack_ref'] ?? '—') ?></td>
+            <td style="color:var(--text-soft);font-size:.78rem;"><?= htmlspecialchars($row['payment_ref'] ?? '—') ?></td>
             <td style="font-size:.82rem;"><?= date('M j, Y', strtotime($row['created_at'])) ?></td>
             <td>
               <a href="order_detail.php?id=<?= $row['id'] ?>">View</a>

@@ -20,7 +20,7 @@ if (!defined('BASE_URL')) {
 
 require_once ROOT_PATH . 'config/database.php';
 require_once ROOT_PATH . 'config/security.php';
-require_once ROOT_PATH . 'config/paystack.php';
+require_once ROOT_PATH . 'config/payments.php';
 require_once ROOT_PATH . 'includes/flash.php';
 
 // Helper: ensure CSRF token is generated at least once per session
