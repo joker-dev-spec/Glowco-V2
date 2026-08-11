@@ -24,7 +24,7 @@ include ROOT_PATH . 'includes/header.php';
       <a href="<?= BASE_URL ?>pages/shop.php" class="btn-primary" style="margin-top:12px;display:inline-block;">Shop the collection</a>
     </div>
     <div class="about-img-placeholder">
-      <img src="<?= BASE_URL ?>assets/images/profile.jpeg"
+      <img src="<?= BASE_URL ?>assets/images/about.jpeg"
            alt="Glow Co."
            onerror="this.style.display='none'">
     </div>

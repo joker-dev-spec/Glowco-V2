@@ -70,7 +70,10 @@ include ROOT_PATH . 'includes/admin_header.php';
             <td><span class="status status--<?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
             <td style="color:var(--text-soft);font-size:.78rem;"><?= htmlspecialchars($row['paystack_ref'] ?? '—') ?></td>
             <td style="font-size:.82rem;"><?= date('M j, Y', strtotime($row['created_at'])) ?></td>
-            <td><a href="update_status.php?id=<?= $row['id'] ?>">Update</a></td>
+            <td>
+              <a href="order_detail.php?id=<?= $row['id'] ?>">View</a>
+              <a href="update_status.php?id=<?= $row['id'] ?>">Status</a>
+            </td>
           </tr>
         <?php endwhile; ?>
       <?php endif; ?>

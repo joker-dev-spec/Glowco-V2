@@ -8,7 +8,7 @@ $conn    = get_db_connection();
 $user_id = $_SESSION['user_id'];
 
 $stmt = $conn->prepare(
-    "SELECT ci.id, ci.quantity, p.id AS product_id, p.name, p.price, p.image_path
+    "SELECT ci.id, ci.quantity, p.id AS product_id, p.name, p.price, p.image_path, p.stock
      FROM cart_items ci
      JOIN products p ON ci.product_id = p.id
      WHERE ci.user_id = ?"
@@ -65,7 +65,21 @@ $csrf = generate_csrf_token();
                 <p>₦<?= number_format($row['price'], 2) ?> each</p>
               </div>
               <div class="qty-controls">
-                <span class="qty-display">Qty: <?= (int)$row['quantity'] ?></span>
+                <form method="POST" action="<?= BASE_URL ?>cart/update.php" class="qty-form">
+                  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+                  <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+                  <input type="hidden" name="action" value="dec">
+                  <button type="submit" class="qty-btn" title="Decrease quantity"
+                          <?= (int)$row['quantity'] <= 1 ? 'disabled' : '' ?>>−</button>
+                </form>
+                <span class="qty-display"><?= (int)$row['quantity'] ?></span>
+                <form method="POST" action="<?= BASE_URL ?>cart/update.php" class="qty-form">
+                  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+                  <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+                  <input type="hidden" name="action" value="inc">
+                  <button type="submit" class="qty-btn" title="Increase quantity"
+                          <?= (int)$row['quantity'] >= (int)$row['stock'] ? 'disabled' : '' ?>>+</button>
+                </form>
               </div>
               <div class="cart-item__subtotal" style="font-weight:600;color:var(--plum);min-width:90px;text-align:right;">
                 ₦<?= number_format($row['subtotal'], 2) ?>

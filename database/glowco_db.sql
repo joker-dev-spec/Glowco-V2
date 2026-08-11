@@ -41,6 +41,11 @@ CREATE TABLE orders (
     total_amount DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'paid', 'shipped', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending',
     paystack_ref VARCHAR(100) DEFAULT NULL,
+    shipping_name VARCHAR(150) DEFAULT NULL,
+    shipping_phone VARCHAR(30) DEFAULT NULL,
+    shipping_address VARCHAR(255) DEFAULT NULL,
+    shipping_city VARCHAR(100) DEFAULT NULL,
+    shipping_state VARCHAR(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -63,6 +68,16 @@ CREATE TABLE wishlist (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     UNIQUE KEY unique_wishlist_item (user_id, product_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    subject VARCHAR(200) DEFAULT NULL,
+    message TEXT NOT NULL,
+    is_read TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- Default admin. Password: REDACTED  (change this on first login!)

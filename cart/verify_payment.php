@@ -30,6 +30,18 @@ if ($tx && ($tx['status'] ?? '') === 'success') {
         $stmt    = $conn->prepare("DELETE FROM cart_items WHERE user_id = ?");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
+
+        // Reduce stock for each purchased item
+        $stmt = $conn->prepare("SELECT product_id, quantity FROM order_items WHERE order_id = ?");
+        $stmt->bind_param("i", $order_id);
+        $stmt->execute();
+        $order_items = $stmt->get_result();
+
+        $dec = $conn->prepare("UPDATE products SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
+        while ($item = $order_items->fetch_assoc()) {
+            $dec->bind_param("ii", $item['quantity'], $item['product_id']);
+            $dec->execute();
+        }
     }
 
     set_flash('success', "Payment confirmed. Order #{$order_id} is being processed.");

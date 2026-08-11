@@ -4,8 +4,37 @@ define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
 session_start();
 
+$form_success = '';
+$form_error   = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) die("Invalid request.");
+
+    $name    = sanitize_input($_POST['name'] ?? '');
+    $email   = sanitize_input($_POST['email'] ?? '');
+    $subject = sanitize_input($_POST['subject'] ?? '');
+    $message = sanitize_input($_POST['message'] ?? '');
+
+    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $message === '') {
+        $form_error = "Please provide your name, a valid email and a message.";
+    } else {
+        $conn = get_db_connection();
+        $stmt = $conn->prepare(
+            "INSERT INTO messages (name, email, subject, message) VALUES (?, ?, ?, ?)"
+        );
+        $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        if ($stmt->execute()) {
+            $form_success = "Thanks {$name}! Your message has been received. We'll reply within 24 hours.";
+            $_POST = [];
+        } else {
+            $form_error = "Sorry, we couldn't send your message. Please try again.";
+        }
+    }
+}
+
 $page_title = 'Contact — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <section class="page-hero">
@@ -45,6 +74,47 @@ include ROOT_PATH . 'includes/header.php';
     <p class="section-eyebrow">Response Time</p>
     <h2 style="font-size:1.8rem;margin-bottom:12px;color:var(--plum);">We reply within 24 hours</h2>
     <p style="color:var(--text-soft);font-size:.95rem;line-height:1.7;">Monday – Friday, 9am – 6pm WAT.<br>Orders placed on weekends are processed Monday morning.</p>
+  </div>
+
+  <div class="contact-form-card">
+    <div style="text-align:center;margin-bottom:28px;">
+      <p class="section-eyebrow">Send a message</p>
+      <h2 style="font-size:1.8rem;color:var(--plum);">We'd love to help</h2>
+    </div>
+
+    <?php if ($form_success): ?>
+      <div class="flash flash--success"><?= htmlspecialchars($form_success) ?></div>
+    <?php elseif ($form_error): ?>
+      <div class="flash flash--error"><?= htmlspecialchars($form_error) ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="contact.php">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+
+      <div class="form-row-2">
+        <div>
+          <label>Your Name *</label>
+          <input type="text" name="name" required value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
+        </div>
+        <div>
+          <label>Your Email *</label>
+          <input type="email" name="email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+        </div>
+      </div>
+
+      <div>
+        <label>Subject</label>
+        <input type="text" name="subject" value="<?= htmlspecialchars($_POST['subject'] ?? '') ?>"
+               placeholder="Order question, skincare advice, partnership...">
+      </div>
+
+      <div>
+        <label>Message *</label>
+        <textarea name="message" required rows="5"><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message</button>
+    </form>
   </div>
 </section>
 

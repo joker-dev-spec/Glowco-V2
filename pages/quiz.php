@@ -5,6 +5,20 @@ require_once ROOT_PATH . 'config/config.php';
 session_start();
 
 $page_title = 'Skin Quiz — Glow Co.';
+
+// Load real products so quiz recommendations link to actual shop items
+$quiz_products = [];
+$conn = get_db_connection();
+$qp = $conn->query("SELECT id, name, price, image_path, description, category FROM products ORDER BY created_at DESC");
+while ($r = $qp->fetch_assoc()) {
+    $attrs = match ($r['category']) {
+        'Perfume'   => ['skin' => ['oily', 'sensitive'], 'concern' => ['glow', 'even'], 'time' => ['night', 'whenever']],
+        'Body Lotion' => ['skin' => ['dry', 'combo'], 'concern' => ['moisture', 'glow'], 'time' => ['morning', 'both']],
+        default     => ['skin' => ['dry', 'sensitive'], 'concern' => ['moisture', 'calm'], 'time' => ['both', 'night']],
+    };
+    $quiz_products[] = $r + $attrs;
+}
+
 include ROOT_PATH . 'includes/header.php';
 ?>
 
@@ -80,56 +94,11 @@ include ROOT_PATH . 'includes/header.php';
 <?php include ROOT_PATH . 'includes/footer.php'; ?>
 
 <script>
+const BASE_URL = '<?= BASE_URL ?>';
 const answers = {};
 let currentStep = 1;
 
-const PRODUCTS = [
-  {
-    name: 'Deep Hydration Cream',
-    price: 8500,
-    emoji: '💧',
-    desc: 'Rich shea butter and hyaluronic acid formula for deep, lasting moisture.',
-    skin: ['dry'],
-    concern: ['moisture'],
-    time: ['night', 'both', 'whenever']
-  },
-  {
-    name: 'Radiance Glow Lotion',
-    price: 9500,
-    emoji: '✨',
-    desc: 'Vitamin C and niacinamide blend that brightens and evens skin tone over time.',
-    skin: ['oily', 'combo'],
-    concern: ['glow', 'even'],
-    time: ['morning', 'both']
-  },
-  {
-    name: 'Sensitive Skin Rescue Cream',
-    price: 7500,
-    emoji: '🌿',
-    desc: 'Fragrance-free, dermatologist-tested formula that calms redness and irritation fast.',
-    skin: ['sensitive'],
-    concern: ['calm', 'moisture'],
-    time: ['morning', 'night', 'both', 'whenever']
-  },
-  {
-    name: 'All-Day Balance Lotion',
-    price: 8000,
-    emoji: '⚖️',
-    desc: 'Lightweight, non-greasy formula that hydrates without clogging pores.',
-    skin: ['combo', 'oily'],
-    concern: ['moisture', 'glow'],
-    time: ['morning', 'both']
-  },
-  {
-    name: 'Overnight Repair Body Butter',
-    price: 11000,
-    emoji: '🌙',
-    desc: 'Intensive overnight treatment with retinol and peptides for visible skin renewal.',
-    skin: ['dry', 'combo'],
-    concern: ['even', 'moisture'],
-    time: ['night', 'both']
-  },
-];
+const PRODUCTS = <?= json_encode($quiz_products) ?>;
 
 function getRecommendation() {
   const skin = answers[1], concern = answers[2], time = answers[3];
@@ -172,16 +141,16 @@ function showResult() {
   const rec = getRecommendation();
   if (!rec) return;
 
-  document.getElementById('resultEmoji').textContent  = rec.emoji;
+  document.getElementById('resultEmoji').textContent  = rec.category === 'Perfume' ? '🌸' : '✨';
   document.getElementById('resultTitle').textContent  = 'Your match: ' + rec.name;
-  document.getElementById('resultDesc').textContent   = rec.desc;
+  document.getElementById('resultDesc').textContent   = rec.description || '';
   document.getElementById('resultProduct').innerHTML  = `
+    ${rec.image_path ? `<img src="${BASE_URL}${rec.image_path}" alt="${rec.name}" onerror="this.style.display='none'" style="width:100%;max-width:280px;margin:0 auto 12px;border-radius:12px;display:block;object-fit:cover;aspect-ratio:1/1;">` : ''}
     <div style="font-weight:600;color:var(--plum);font-family:var(--font-display);font-size:1.1rem;margin-bottom:4px;">${rec.name}</div>
     <div style="color:var(--pink-deep);font-family:var(--font-display);font-size:1.2rem;font-weight:600;">₦${Number(rec.price).toLocaleString('en-NG')}</div>`;
 
   document.getElementById('resultCartBtn').onclick = () => {
-    const q = encodeURIComponent(rec.name);
-    window.location.href = '<?= BASE_URL ?>pages/shop.php?q=' + q;
+    window.location.href = BASE_URL + 'pages/product.php?id=' + rec.id;
   };
 }
 

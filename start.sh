@@ -7,4 +7,4 @@ PORT="${PORT:-8000}"
 HOST="${HOST:-0.0.0.0}"
 
 echo "Starting Glow Co. on http://${HOST}:${PORT}"
-exec php -S "${HOST}:${PORT}" -t "$(dirname "$0")"
+exec php -S "${HOST}:${PORT}" -t "$(dirname "$0")" "$(dirname "$0")/router.php"

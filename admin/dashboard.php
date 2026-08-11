@@ -16,6 +16,10 @@ $recent_orders = $conn->query(
      ORDER BY o.created_at DESC LIMIT 10"
 );
 
+$low_stock = $conn->query(
+    "SELECT id, name, stock FROM products WHERE stock <= 5 ORDER BY stock ASC LIMIT 8"
+);
+
 $page_title = 'Dashboard — Glow Co. Admin';
 include ROOT_PATH . 'includes/admin_header.php';
 ?>
@@ -42,6 +46,21 @@ include ROOT_PATH . 'includes/admin_header.php';
     </div>
   </div>
 
+  <?php if ($low_stock && $low_stock->num_rows > 0): ?>
+    <div style="background:rgba(224,92,92,.08);border:1px solid rgba(224,92,92,.25);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:28px;">
+      <h2 style="font-size:1.05rem;color:#c62828;margin-bottom:12px;">⚠️ Low stock — reorder soon</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <?php while ($ls = $low_stock->fetch_assoc()): ?>
+          <a href="<?= BASE_URL ?>admin/edit_product.php?id=<?= $ls['id'] ?>"
+             style="background:var(--white);border:1px solid var(--pink-soft);border-radius:50px;padding:8px 16px;font-size:.82rem;color:var(--plum);display:inline-flex;align-items:center;gap:8px;">
+            <?= htmlspecialchars($ls['name']) ?>
+            <span style="font-weight:700;color:#c62828;"><?= (int)$ls['stock'] ?> left</span>
+          </a>
+        <?php endwhile; ?>
+      </div>
+    </div>
+  <?php endif; ?>
+
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
     <h2 style="font-size:1.3rem;color:var(--plum);">Recent Orders</h2>
     <a href="<?= BASE_URL ?>admin/orders.php" class="btn-primary" style="font-size:.82rem;padding:8px 18px;">View all</a>
@@ -66,13 +85,13 @@ include ROOT_PATH . 'includes/admin_header.php';
           <td>₦<?= number_format($row['total_amount'], 2) ?></td>
           <td><span class="status status--<?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
           <td><?= date('M j, Y', strtotime($row['created_at'])) ?></td>
-          <td><a href="update_status.php?id=<?= $row['id'] ?>">Update</a></td>
+          <td><a href="order_detail.php?id=<?= $row['id'] ?>">View</a></td>
         </tr>
       <?php endwhile; ?>
     </tbody>
   </table>
 
-  <div style="display:flex;gap:16px;margin-top:32px;">
+  <div style="display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;">
     <a href="<?= BASE_URL ?>admin/add_product.php" class="btn-primary">+ Add Product</a>
     <a href="<?= BASE_URL ?>admin/products.php" class="btn-primary"
        style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">Manage Products</a>
