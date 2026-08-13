@@ -2,11 +2,12 @@
 // --- auth/reset_password.php ---
 require_once dirname(__DIR__) . "/config/config.php";
 session_start();
+header("Referrer-Policy: no-referrer");
 
-$token = sanitize_input($_GET['token'] ?? '');
+$token = $_GET['token'] ?? '';
 $error = '';
 
-if (empty($token)) {
+if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
     header("Location: login.php");
     exit();
 }
@@ -15,7 +16,7 @@ $conn = get_db_connection();
 $stmt = $conn->prepare(
     "SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()"
 );
-$stmt->bind_param("s", $token);
+$stmt->bind_param("s", hash('sha256', $token));
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 

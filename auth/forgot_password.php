@@ -2,6 +2,7 @@
 // --- auth/forgot_password.php ---
 
 session_start();
+header("Referrer-Policy: no-referrer");
 require_once dirname(__DIR__) . "/config/config.php";
 
 $message = '';
@@ -17,12 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->get_result()->num_rows === 1) {
         $token = bin2hex(random_bytes(32));
+        // Only the SHA-256 hash of the token is stored so a leaked DB can't be
+        // used to reset accounts; the raw token is sent to the user.
         // Expiry uses MySQL NOW() so it stays consistent with the
         // `reset_token_expires > NOW()` check regardless of PHP/DB timezones.
         $stmt = $conn->prepare(
             "UPDATE users SET reset_token = ?, reset_token_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?"
         );
-        $stmt->bind_param("ss", $token, $email);
+        $stmt->bind_param("ss", hash('sha256', $token), $email);
         $stmt->execute();
 
         $reset_link = BASE_URL . "auth/reset_password.php?token={$token}";
