@@ -51,6 +51,10 @@ include ROOT_PATH . 'includes/header.php';
 
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
         <a href="<?= BASE_URL ?>user/orders.php" class="btn-primary" style="text-align:center;">View All Orders</a>
+        <a href="<?= BASE_URL ?>user/change_password.php" class="btn-primary"
+           style="background:transparent;border:1.5px solid var(--pink);color:var(--plum);text-align:center;">
+          Change Password
+        </a>
         <a href="<?= BASE_URL ?>wishlist/view.php" class="btn-primary"
            style="background:transparent;border:1.5px solid var(--pink);color:var(--plum);text-align:center;">
           My Wishlist

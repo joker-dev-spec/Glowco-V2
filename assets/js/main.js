@@ -106,18 +106,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ── Cart add button feedback ───────────────────────────────────
+    // ── Cart add (AJAX, no page reload) ────────────────────────────
     document.querySelectorAll('form[action*="cart/add"]').forEach(form => {
-        form.addEventListener('submit', () => {
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
             const btn = form.querySelector('button[type="submit"]');
-            if (btn) {
-                const original = btn.textContent;
-                btn.textContent = '✓ Added';
-                btn.style.background = 'var(--color-success)';
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.style.background = '';
-                }, 1500);
+            const originalHTML = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = 'Adding...'; }
+
+            try {
+                const res  = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form)
+                });
+                const data = await res.json();
+
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = data.success ? ('✓ ' + data.message) : data.message;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3500);
+                }
+
+                if (btn) {
+                    if (data.success) {
+                        btn.innerHTML = '✓ Added';
+                        btn.style.background = 'var(--plum)';
+                        btn.style.color = '#fff';
+                        setTimeout(() => {
+                            btn.innerHTML = originalHTML;
+                            btn.style.background = '';
+                            btn.style.color = '';
+                            btn.disabled = false;
+                        }, 1800);
+                    } else {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    }
+                }
+            } catch {
+                // Network error — fall back to a normal submit so the user
+                // still gets the item in their cart.
+                form.submit();
             }
         });
     });

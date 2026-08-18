@@ -1,8 +1,9 @@
 <?php
 // --- includes/user_auth.php ---
 
-session_start();
+if (!defined('ROOT_PATH')) define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . "config/config.php";
+secure_session_start();
 
 if (!is_logged_in()) {
     header("Location: " . BASE_URL . "auth/login.php");

@@ -3,7 +3,7 @@
 
 if (!defined('ROOT_PATH')) define('ROOT_PATH', __DIR__ . '/');
 require_once ROOT_PATH . 'config/config.php';
-session_start();
+secure_session_start();
 
 $conn     = get_db_connection();
 $featured = $conn->query(

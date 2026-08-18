@@ -2,7 +2,7 @@
 // --- pages/quiz.php ---
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
-session_start();
+secure_session_start();
 
 $page_title = 'Skin Quiz — Glow Co.';
 
@@ -137,6 +137,12 @@ function updateProgress(active) {
   });
 }
 
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+
 function showResult() {
   const rec = getRecommendation();
   if (!rec) return;
@@ -144,9 +150,12 @@ function showResult() {
   document.getElementById('resultEmoji').textContent  = rec.category === 'Perfume' ? '🌸' : '✨';
   document.getElementById('resultTitle').textContent  = 'Your match: ' + rec.name;
   document.getElementById('resultDesc').textContent   = rec.description || '';
+  const img = rec.image_path
+    ? `<img src="${esc(BASE_URL + rec.image_path)}" alt="${esc(rec.name)}" onerror="this.style.display='none'" style="width:100%;max-width:280px;margin:0 auto 12px;border-radius:12px;display:block;object-fit:cover;aspect-ratio:1/1;">`
+    : '';
   document.getElementById('resultProduct').innerHTML  = `
-    ${rec.image_path ? `<img src="${BASE_URL}${rec.image_path}" alt="${rec.name}" onerror="this.style.display='none'" style="width:100%;max-width:280px;margin:0 auto 12px;border-radius:12px;display:block;object-fit:cover;aspect-ratio:1/1;">` : ''}
-    <div style="font-weight:600;color:var(--plum);font-family:var(--font-display);font-size:1.1rem;margin-bottom:4px;">${rec.name}</div>
+    ${img}
+    <div style="font-weight:600;color:var(--plum);font-family:var(--font-display);font-size:1.1rem;margin-bottom:4px;">${esc(rec.name)}</div>
     <div style="color:var(--pink-deep);font-family:var(--font-display);font-size:1.2rem;font-weight:600;">₦${Number(rec.price).toLocaleString('en-NG')}</div>`;
 
   document.getElementById('resultCartBtn').onclick = () => {

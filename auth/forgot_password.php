@@ -1,37 +1,42 @@
 <?php
 // --- auth/forgot_password.php ---
 
-session_start();
-header("Referrer-Policy: no-referrer");
 require_once dirname(__DIR__) . "/config/config.php";
+secure_session_start();
+header("Referrer-Policy: no-referrer");
+header('Cache-Control: no-store, no-cache, must-revalidate');
 
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? null)) die("Invalid request.");
 
-    $email = sanitize_input($_POST['email'] ?? '');
-    $conn  = get_db_connection();
-    $stmt  = $conn->prepare("SELECT id FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-
-    if ($stmt->get_result()->num_rows === 1) {
-        $token = bin2hex(random_bytes(32));
-        // Only the SHA-256 hash of the token is stored so a leaked DB can't be
-        // used to reset accounts; the raw token is sent to the user.
-        // Expiry uses MySQL NOW() so it stays consistent with the
-        // `reset_token_expires > NOW()` check regardless of PHP/DB timezones.
-        $stmt = $conn->prepare(
-            "UPDATE users SET reset_token = ?, reset_token_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?"
-        );
-        $stmt->bind_param("ss", hash('sha256', $token), $email);
+    if (!rate_limit('forgot', 5, 900)) {
+        $message = "info|Too many reset requests from this network. Please try again later.";
+    } else {
+        $email = sanitize_input($_POST['email'] ?? '');
+        $conn  = get_db_connection();
+        $stmt  = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
 
-        $reset_link = BASE_URL . "auth/reset_password.php?token={$token}";
-        $message    = "success|Reset link ready. <a href='{$reset_link}' style='color:var(--pink-deep);font-weight:600;'>Click here to reset your password.</a> In production this sends an email.";
-    } else {
-        $message = "info|If that email exists in our system, a reset link has been sent.";
+        if ($stmt->get_result()->num_rows === 1) {
+            $token = bin2hex(random_bytes(32));
+            // Only the SHA-256 hash of the token is stored so a leaked DB can't be
+            // used to reset accounts; the raw token is sent to the user.
+            // Expiry uses MySQL NOW() so it stays consistent with the
+            // `reset_token_expires > NOW()` check regardless of PHP/DB timezones.
+            $stmt = $conn->prepare(
+                "UPDATE users SET reset_token = ?, reset_token_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?"
+            );
+            $stmt->bind_param("ss", hash('sha256', $token), $email);
+            $stmt->execute();
+
+            $reset_link = BASE_URL . "auth/reset_password.php?token={$token}";
+            $message    = "success|Reset link ready. <a href='{$reset_link}' style='color:var(--pink-deep);font-weight:600;'>Click here to reset your password.</a> In production this sends an email.";
+        } else {
+            $message = "info|If that email exists in our system, a reset link has been sent.";
+        }
     }
 }
 

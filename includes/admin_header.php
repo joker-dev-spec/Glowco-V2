@@ -1,7 +1,7 @@
 <?php
 // --- includes/admin_header.php ---
-if (session_status() === PHP_SESSION_NONE) session_start();
 if (!defined('ROOT_PATH')) require_once dirname(__DIR__) . '/config/config.php';
+if (session_status() === PHP_SESSION_NONE) secure_session_start();
 $flash = get_flash();
 
 ?>

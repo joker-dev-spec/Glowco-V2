@@ -2,7 +2,7 @@
 
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
-session_start();
+secure_session_start();
 
 $page_title = 'About — Glow Co.';
 include ROOT_PATH . 'includes/header.php';

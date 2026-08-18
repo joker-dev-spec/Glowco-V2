@@ -10,6 +10,7 @@ $result = $conn->query(
 
 $page_title = 'Products — Glow Co. Admin';
 include ROOT_PATH . 'includes/admin_header.php';
+$csrf = generate_csrf_token();
 ?>
 
 <div class="admin-main">
@@ -48,9 +49,15 @@ include ROOT_PATH . 'includes/admin_header.php';
           <td><?= htmlspecialchars($row['category'] ?? '—') ?></td>
           <td>
             <a href="edit_product.php?id=<?= $row['id'] ?>">Edit</a>
-            <a href="delete_product.php?id=<?= $row['id'] ?>"
-               onclick="return confirm('Delete <?= htmlspecialchars($row['name']) ?>? This cannot be undone.')"
-               style="color:#c62828;border-color:#c62828;">Delete</a>
+            <form method="POST" action="delete_product.php" style="display:inline;"
+                  onsubmit="return confirm('Delete <?= htmlspecialchars($row['name']) ?>? This cannot be undone.')">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
+              <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+              <button type="submit"
+                      style="background:none;border:none;padding:0;color:#c62828;text-decoration:underline;cursor:pointer;font-size:inherit;">
+                Delete
+              </button>
+            </form>
           </td>
         </tr>
       <?php endwhile; ?>

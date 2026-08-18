@@ -30,15 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
         $stmt->bind_param("si", $new_status, $id);
         if ($stmt->execute()) {
-            if ($new_status === 'paid' && $order['status'] !== 'paid') {
+            if ($new_status === 'cancelled' && $order['status'] !== 'cancelled') {
                 $stmt = $conn->prepare("SELECT product_id, quantity FROM order_items WHERE order_id = ?");
                 $stmt->bind_param("i", $id);
                 $stmt->execute();
                 $items = $stmt->get_result();
-                $dec   = $conn->prepare("UPDATE products SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
+                $add   = $conn->prepare("UPDATE products SET stock = stock + ? WHERE id = ?");
                 while ($it = $items->fetch_assoc()) {
-                    $dec->bind_param("ii", $it['quantity'], $it['product_id']);
-                    $dec->execute();
+                    $add->bind_param("ii", $it['quantity'], $it['product_id']);
+                    $add->execute();
                 }
             }
             set_flash('success', "Order #$id updated to " . ucfirst($new_status) . ".");

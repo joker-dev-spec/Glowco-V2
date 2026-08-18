@@ -30,9 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image_path  = $product['image_path'];
 
     if (!empty($_FILES['image']['name'])) {
-        $ext     = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        if (in_array($ext, $allowed)) {
+        $ext      = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed  = ['jpg', 'jpeg', 'png', 'webp'];
+        $max_size = 5 * 1024 * 1024;
+
+        if (!in_array($ext, $allowed)) {
+            $error = "Image must be JPG, PNG or WEBP.";
+        } elseif ((int)($_FILES['image']['size'] ?? 0) > $max_size) {
+            $error = "Image is too large. Max size is 5MB.";
+        } elseif (@getimagesize($_FILES['image']['tmp_name']) === false) {
+            $error = "The uploaded file is not a valid image.";
+        } else {
             $filename = uniqid('prod_', true) . '.' . $ext;
             $target   = ROOT_PATH . 'uploads/' . $filename;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {

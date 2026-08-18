@@ -1,8 +1,9 @@
 <?php
 // --- auth/reset_password.php ---
 require_once dirname(__DIR__) . "/config/config.php";
-session_start();
+secure_session_start();
 header("Referrer-Policy: no-referrer");
+header('Cache-Control: no-store, no-cache, must-revalidate');
 
 $token = $_GET['token'] ?? '';
 $error = '';

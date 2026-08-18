@@ -1,7 +1,8 @@
 <?php
 
 require_once dirname(__DIR__) . "/config/config.php";
-session_start();
+secure_session_start();
+header('Cache-Control: no-store, no-cache, must-revalidate');
 
 $error = '';
 
@@ -21,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Password must be at least 8 characters.";
     } elseif ($password !== $confirm) {
         $error = "Passwords do not match.";
+    } elseif (!rate_limit('register', 5, 3600)) {
+        $error = "Too many accounts created from this network. Please try again later.";
     } else {
         $conn = get_db_connection();
 
@@ -38,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sss", $name, $email, $hashed);
 
             if ($stmt->execute()) {
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = $conn->insert_id;
                 $_SESSION['name']    = $name;
                 $_SESSION['role']    = 'customer';

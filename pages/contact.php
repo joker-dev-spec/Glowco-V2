@@ -2,7 +2,7 @@
 // --- pages/contact.php ---
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'config/config.php';
-session_start();
+secure_session_start();
 
 $form_success = '';
 $form_error   = '';
@@ -15,7 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = sanitize_input($_POST['subject'] ?? '');
     $message = sanitize_input($_POST['message'] ?? '');
 
-    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $message === '') {
+    if (!rate_limit('contact', 3, 3600)) {
+        $form_error = "Too many messages from this network. Please try again later.";
+    } elseif ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $message === '') {
         $form_error = "Please provide your name, a valid email and a message.";
     } else {
         $conn = get_db_connection();

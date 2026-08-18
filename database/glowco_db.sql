@@ -81,9 +81,20 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Default admin. Password: REDACTED  (change this on first login!)
-INSERT INTO users (name, email, password_hash, role)
-VALUES ('Admin', 'admin@example.com', '$2y$12$REDACTED-ROTATE-ON-DEPLOY', 'admin');
+CREATE TABLE rate_limits (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    action VARCHAR(32) NOT NULL,
+    ip_hash CHAR(64) NOT NULL,
+    attempts INT NOT NULL DEFAULT 1,
+    window_start INT NOT NULL,
+    UNIQUE KEY unique_rate_limit (action, ip_hash)
+) ENGINE=InnoDB;
+
+-- Create your admin account manually (no credentials are shipped in this repo):
+--   INSERT INTO users (name, email, password_hash, role)
+--   VALUES ('Admin', 'admin@yourdomain.com',
+--           '$2y$12$<generate-with-password_hash()>', 'admin');
+-- Or simply register on the site and set role='admin' in the DB.
 
 -- Sample products so the shop isn't empty on first run
 -- (image_path values reference the bundled files in uploads/)

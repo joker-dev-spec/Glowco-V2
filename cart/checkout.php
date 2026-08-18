@@ -50,6 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->begin_transaction();
 
         try {
+            $reserve = $conn->prepare("SELECT stock FROM products WHERE id = ? FOR UPDATE");
+            foreach ($cart as $item) {
+                $reserve->bind_param("i", $item['product_id']);
+                $reserve->execute();
+                $res = $reserve->get_result()->fetch_assoc();
+                if (!$res || (int)$res['stock'] < (int)$item['quantity']) {
+                    throw new RuntimeException("insufficient_stock:" . $item['name']);
+                }
+            }
+
             $stmt = $conn->prepare(
                 "INSERT INTO orders (user_id, total_amount, status, shipping_name, shipping_phone, shipping_address, shipping_city, shipping_state)
                  VALUES (?, ?, 'pending', ?, ?, ?, ?, ?)"
@@ -66,11 +76,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
             }
 
+            $dec = $conn->prepare("UPDATE products SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
+            foreach ($cart as $item) {
+                $dec->bind_param("ii", $item['quantity'], $item['product_id']);
+                $dec->execute();
+            }
+
             $stmt = $conn->prepare("DELETE FROM cart_items WHERE user_id = ?");
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
 
             $conn->commit();
+        } catch (RuntimeException $e) {
+            $conn->rollback();
+            if (str_starts_with($e->getMessage(), 'insufficient_stock:')) {
+                set_flash('error', 'Not enough stock for "' . substr($e->getMessage(), 18) . '". Please reduce the quantity and try again.');
+            } else {
+                set_flash('error', 'Checkout failed. Please try again.');
+            }
+            header("Location: " . BASE_URL . "cart/cart.php");
+            exit();
         } catch (Exception $e) {
             $conn->rollback();
             error_log("Checkout failed: " . $e->getMessage());

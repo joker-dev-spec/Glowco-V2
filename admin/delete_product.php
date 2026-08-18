@@ -3,7 +3,14 @@
 define('ROOT_PATH', dirname(__DIR__) . '/');
 require_once ROOT_PATH . 'includes/admin_auth.php';
 
-$id   = (int)($_GET['id'] ?? 0);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: products.php");
+    exit();
+}
+
+if (!verify_csrf_token($_POST['csrf_token'] ?? null)) die("Invalid request.");
+
+$id   = (int)($_POST['id'] ?? 0);
 $conn = get_db_connection();
 
 $stmt = $conn->prepare("SELECT image_path FROM products WHERE id = ?");

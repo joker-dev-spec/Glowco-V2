@@ -1,7 +1,7 @@
 <?php
 // --- includes/header.php ---
-if (session_status() === PHP_SESSION_NONE) session_start();
 if (!defined('ROOT_PATH')) require_once dirname(__DIR__) . '/config/config.php';
+if (session_status() === PHP_SESSION_NONE) secure_session_start();
 require_once ROOT_PATH . 'includes/flash.php';
 $flash = get_flash();
 
@@ -32,7 +32,7 @@ function badge_count(int $n): string {
   <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'Glow Co.') ?>">
   <meta property="og:description" content="Premium body creams, perfumes & lotions made with natural butters and botanical oils.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '') ?>">
+  <meta property="og:url" content="<?= htmlspecialchars((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '')) ?>">
   <meta property="og:image" content="<?= BASE_URL ?>assets/images/logo.jpeg">
   <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
