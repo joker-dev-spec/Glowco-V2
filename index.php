@@ -7,7 +7,7 @@ secure_session_start();
 
 $conn     = get_db_connection();
 $featured = $conn->query(
-    "SELECT id, name, price, image_path, description FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 8"
+    "SELECT id, name, price, image_path, description, stock FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 8"
 );
 
 $page_title = 'Glow Co. — Premium Body Creams';
