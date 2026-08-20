@@ -102,11 +102,11 @@ $csrf = generate_csrf_token();
   <?php if (!$category): ?>
   <div style="display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
     <a href="<?= BASE_URL ?>pages/shop.php?category=Perfume<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
-       class="btn-primary" style="font-size:.82rem;padding:10px 28px;">
+       class="btn-primary btn-sm">
       Perfumes
     </a>
     <a href="<?= BASE_URL ?>pages/shop.php?category=Body+Lotion<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
-       class="btn-primary" style="font-size:.82rem;padding:10px 28px;">
+       class="btn-primary btn-sm">
       Body Lotions
     </a>
   </div>
@@ -209,7 +209,7 @@ function render_product_card($p) {
     <?php if ($category === 'Perfume'): ?>
       <div style="text-align:center;margin-top:32px;">
         <a href="<?= BASE_URL ?>pages/shop.php<?= $sort !== 'newest' ? '?sort=' . urlencode($sort) : '' ?>"
-           class="btn-primary" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
+           class="btn-primary btn-sm" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
           ← Back to All Products
         </a>
       </div>
@@ -238,7 +238,7 @@ function render_product_card($p) {
     <?php if ($category === 'Body Lotion'): ?>
       <div style="text-align:center;margin-top:32px;">
         <a href="<?= BASE_URL ?>pages/shop.php<?= $sort !== 'newest' ? '?sort=' . urlencode($sort) : '' ?>"
-           class="btn-primary" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
+           class="btn-primary btn-sm" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
           ← Back to All Products
         </a>
       </div>
