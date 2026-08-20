@@ -5,8 +5,9 @@ require_once ROOT_PATH . 'config/config.php';
 secure_session_start();
 
 $conn = get_db_connection();
-$sort = sanitize_input($_GET['sort'] ?? 'newest');
-$q    = sanitize_input($_GET['q'] ?? '');
+$sort     = sanitize_input($_GET['sort'] ?? 'newest');
+$q        = sanitize_input($_GET['q'] ?? '');
+$category = sanitize_input($_GET['category'] ?? '');
 
 $allowed_sorts = [
     'newest'     => 'created_at DESC',
@@ -16,43 +17,45 @@ $allowed_sorts = [
 ];
 $order_clause = $allowed_sorts[$sort] ?? 'created_at DESC';
 
-// Pull perfumes and body lotions as separate result sets
-if ($q !== '') {
-    $like = '%' . $q . '%';
+$SAMPLE_LIMIT = 3;
 
-    $stmt_perfumes = $conn->prepare(
-        "SELECT id, name, price, image_path, stock, description
-         FROM products
-         WHERE category = 'Perfume'
-         AND (name LIKE ? OR description LIKE ?)
-         ORDER BY {$order_clause}"
-    );
-    $stmt_perfumes->bind_param("ss", $like, $like);
-    $stmt_perfumes->execute();
-    $perfumes = $stmt_perfumes->get_result();
+// Determine which categories to show
+$show_perfumes = ($category === '' || $category === 'Perfume');
+$show_lotions  = ($category === '' || $category === 'Body Lotion');
 
-    $stmt_lotions = $conn->prepare(
-        "SELECT id, name, price, image_path, stock, description
-         FROM products
-         WHERE category = 'Body Lotion'
-         AND (name LIKE ? OR description LIKE ?)
-         ORDER BY {$order_clause}"
-    );
-    $stmt_lotions->bind_param("ss", $like, $like);
-    $stmt_lotions->execute();
-    $lotions = $stmt_lotions->get_result();
-} else {
-    $perfumes = $conn->query(
-        "SELECT id, name, price, image_path, stock, description
-         FROM products WHERE category = 'Perfume'
-         ORDER BY {$order_clause}"
-    );
-    $lotions = $conn->query(
-        "SELECT id, name, price, image_path, stock, description
-         FROM products WHERE category = 'Body Lotion'
-         ORDER BY {$order_clause}"
-    );
+function build_query($conn, $category, $like, $order_clause, $limit) {
+    $where = $like !== null
+        ? "AND (name LIKE ? OR description LIKE ?)"
+        : "";
+    $sql = "SELECT id, name, price, image_path, stock, description
+            FROM products
+            WHERE category = ? {$where}
+            ORDER BY {$order_clause}";
+    if ($limit) $sql .= " LIMIT " . (int)$limit;
+
+    $stmt = $conn->prepare($sql);
+    if ($like !== null) {
+        $stmt->bind_param("sss", $category, $like, $like);
+    } else {
+        $stmt->bind_param("s", $category);
+    }
+    $stmt->execute();
+    return $stmt->get_result();
 }
+
+$like = ($q !== '') ? '%' . $q . '%' : null;
+
+$perfumes      = $show_perfumes ? build_query($conn, 'Perfume',     $like, $order_clause, $category ? null : $SAMPLE_LIMIT) : null;
+$perfume_total = 0;
+if ($show_perfumes && $perfumes) $perfume_total = $perfumes->num_rows;
+
+$lotions      = $show_lotions ? build_query($conn, 'Body Lotion', $like, $order_clause, $category ? null : $SAMPLE_LIMIT) : null;
+$lotion_total = 0;
+if ($show_lotions && $lotions) $lotion_total = $lotions->num_rows;
+
+// Count total in each category (for "view all" buttons)
+$count_perfumes = $conn->query("SELECT COUNT(*) AS c FROM products WHERE category = 'Perfume'")->fetch_assoc()['c'];
+$count_lotions  = $conn->query("SELECT COUNT(*) AS c FROM products WHERE category = 'Body Lotion'")->fetch_assoc()['c'];
 
 $page_title = 'Shop — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
@@ -64,13 +67,30 @@ $csrf = generate_csrf_token();
   <h1>Shop <em>everything.</em></h1>
   <p>Premium body creams, perfumes &amp; lotions made with natural butters and botanical oils.</p>
 
-  <form method="GET" action="shop.php" class="shop-search">
-    <input type="text" name="q" placeholder="Search products..."
-           value="<?= htmlspecialchars($q) ?>">
-    <button type="submit">Search</button>
-  </form>
+  <!-- Floating Search Bar -->
+  <div class="floating-search" id="floatingSearch">
+    <div class="floating-search__inner">
+      <svg class="floating-search__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="floatingSearchInput" class="floating-search__input"
+             placeholder="Search perfumes, lotions..."
+             autocomplete="off" autofocus>
+      <button type="button" class="floating-search__clear" id="searchClear"
+              style="display:none;" aria-label="Clear search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <button type="button" class="floating-search__submit" id="searchSubmit">Go</button>
+    </div>
+    <div class="floating-search__dropdown" id="searchDropdown"></div>
+  </div>
 
   <form method="GET" style="display:flex;justify-content:center;margin-top:16px;">
+    <?php if ($category): ?>
+      <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
+    <?php endif; ?>
     <?php if ($q): ?>
       <input type="hidden" name="q" value="<?= htmlspecialchars($q) ?>">
     <?php endif; ?>
@@ -160,10 +180,17 @@ function render_product_card($p) {
 }
 ?>
 
+<?php if ($show_perfumes): ?>
 <!-- ── PERFUMES SECTION ───────────────────────────────────────────── -->
 <section class="products-section">
-  <div class="category-header">
+  <div class="category-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <h2>Perfumes</h2>
+    <?php if (!$category): ?>
+      <a href="<?= BASE_URL ?>pages/shop.php?category=Perfume<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
+         class="btn-primary" style="font-size:.82rem;padding:10px 24px;">
+        Shop Perfumes (<?= $count_perfumes ?>)
+      </a>
+    <?php endif; ?>
   </div>
 
   <?php if ($perfumes->num_rows === 0): ?>
@@ -176,13 +203,29 @@ function render_product_card($p) {
         <?= render_product_card($p) ?>
       <?php endwhile; ?>
     </div>
+    <?php if ($category === 'Perfume'): ?>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="<?= BASE_URL ?>pages/shop.php<?= $sort !== 'newest' ? '?sort=' . urlencode($sort) : '' ?>"
+           class="btn-primary" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
+          ← Back to All Products
+        </a>
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
 </section>
+<?php endif; ?>
 
+<?php if ($show_lotions): ?>
 <!-- ── BODY LOTIONS SECTION ──────────────────────────────────────── -->
 <section class="products-section" style="padding-top:0;">
-  <div class="category-header">
+  <div class="category-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <h2>Body Lotions</h2>
+    <?php if (!$category): ?>
+      <a href="<?= BASE_URL ?>pages/shop.php?category=Body+Lotion<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
+         class="btn-primary" style="font-size:.82rem;padding:10px 24px;">
+        Shop Body Lotions (<?= $count_lotions ?>)
+      </a>
+    <?php endif; ?>
   </div>
 
   <?php if ($lotions->num_rows === 0): ?>
@@ -195,7 +238,103 @@ function render_product_card($p) {
         <?= render_product_card($p) ?>
       <?php endwhile; ?>
     </div>
+    <?php if ($category === 'Body Lotion'): ?>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="<?= BASE_URL ?>pages/shop.php<?= $sort !== 'newest' ? '?sort=' . urlencode($sort) : '' ?>"
+           class="btn-primary" style="background:transparent;border:1.5px solid var(--plum);color:var(--plum);">
+          ← Back to All Products
+        </a>
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
 </section>
+<?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const input     = document.getElementById('floatingSearchInput');
+  const clear     = document.getElementById('searchClear');
+  const submit    = document.getElementById('searchSubmit');
+  const dropdown  = document.getElementById('searchDropdown');
+  const base      = '<?= BASE_URL ?>';
+  let debounce    = null;
+
+  input.addEventListener('input', () => {
+    clear.style.display = input.value.length ? 'flex' : 'none';
+    clearTimeout(debounce);
+    const q = input.value.trim();
+    if (q.length < 2) { dropdown.classList.remove('active'); return; }
+    debounce = setTimeout(() => fetchResults(q), 250);
+  });
+
+  clear.addEventListener('click', () => {
+    input.value = '';
+    clear.style.display = 'none';
+    dropdown.classList.remove('active');
+    input.focus();
+  });
+
+  submit.addEventListener('click', () => {
+    const q = input.value.trim();
+    if (q) window.location.href = base + 'pages/search.php?q=' + encodeURIComponent(q);
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const q = input.value.trim();
+      if (q) window.location.href = base + 'pages/search.php?q=' + encodeURIComponent(q);
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.floating-search')) dropdown.classList.remove('active');
+  });
+
+  function fetchResults(q) {
+    fetch(base + 'pages/search_ajax.php?q=' + encodeURIComponent(q))
+      .then(r => r.json())
+      .then(data => renderDropdown(data, q))
+      .catch(() => { dropdown.classList.remove('active'); });
+  }
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderDropdown(data, q) {
+    if (!data.results || !data.results.length) {
+      dropdown.innerHTML = '<div class="search-dropdown__empty">No products found for "' + esc(q) + '"</div>';
+      dropdown.classList.add('active');
+      return;
+    }
+    let html = '';
+    data.results.forEach(p => {
+      const img = p.image
+        ? '<img class="search-result__img" src="' + esc(p.image) + '" alt="' + esc(p.name) + '">'
+        : '<div class="search-result__img search-result__img--placeholder">🧴</div>';
+      const stockLabel = p.stock > 0
+        ? '<span class="search-result__stock search-result__stock--in">In Stock</span>'
+        : '<span class="search-result__stock search-result__stock--out">Out of Stock</span>';
+      html += '<a class="search-result" href="' + esc(p.url) + '">'
+            + img
+            + '<div class="search-result__info">'
+            +   '<div class="search-result__name">' + esc(p.name) + '</div>'
+            +   '<div class="search-result__meta">' + esc(p.category) + '</div>'
+            + '</div>'
+            + '<span class="search-result__price">' + esc(p.price) + '</span>'
+            + stockLabel
+            + '</a>';
+    });
+    if (data.total > data.results.length) {
+      html += '<a class="search-dropdown__footer" href="' + base + 'pages/search.php?q=' + encodeURIComponent(q) + '">'
+            + 'View all ' + data.total + ' results →</a>';
+    }
+    dropdown.innerHTML = html;
+    dropdown.classList.add('active');
+  }
+});
+</script>
 
 <?php include ROOT_PATH . 'includes/footer.php'; ?>
