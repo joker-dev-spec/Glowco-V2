@@ -23,7 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
     if ($is_ajax) json_res(false, 'Invalid request. Please try again.', 403);
     set_flash('error', 'Invalid request. Please try again.');
-    header("Location: " . ($_SERVER['HTTP_REFERER'] ?? BASE_URL . 'pages/shop.php'));
+    $back = $_SERVER['HTTP_REFERER'] ?? BASE_URL . 'pages/shop.php';
+    if (!str_starts_with($back, BASE_URL) && !str_starts_with($back, '/')) {
+        $back = BASE_URL . 'pages/shop.php';
+    }
+    header("Location: " . $back);
     exit();
 }
 

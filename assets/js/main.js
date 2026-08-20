@@ -54,9 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Active nav link ────────────────────────────────────────────
     const currentPath = window.location.pathname;
-    document.querySelectorAll('.navbar__links a, .admin-nav a').forEach(link => {
-        if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href').split('/').pop())) {
-            link.style.color = 'var(--color-primary)';
+    document.querySelectorAll('header nav a.nav-link, .admin-nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const page = href.split('/').pop();
+        if (page && currentPath.endsWith(page)) {
+            link.classList.add('active');
         }
     });
 

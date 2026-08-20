@@ -18,7 +18,7 @@ $order_clause = $allowed_sorts[$sort] ?? 'created_at DESC';
 
 // Pull perfumes and body lotions as separate result sets
 if ($q !== '') {
-    $like = '%' . $conn->real_escape_string($q) . '%';
+    $like = '%' . $q . '%';
 
     $stmt_perfumes = $conn->prepare(
         "SELECT id, name, price, image_path, stock, description

@@ -2,7 +2,9 @@
 // --- 404.php ---
 define('ROOT_PATH', __DIR__ . '/');
 require_once ROOT_PATH . 'config/config.php';
+secure_session_start();
 http_response_code(404);
+$flash = get_flash();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +17,14 @@ http_response_code(404);
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<?php if ($flash): ?>
+  <div class="flash flash--<?= htmlspecialchars($flash['type']) ?>"
+       style="max-width:1200px;margin:80px auto 0;">
+    <?= htmlspecialchars($flash['message']) ?>
+  </div>
+<?php endif; ?>
+
 <div class="auth-wrapper" style="padding:2rem 1rem;">
   <div class="auth-card" style="text-align:center;">
     <div style="font-size:4rem;margin-bottom:12px;">🔍</div>
@@ -24,5 +34,7 @@ http_response_code(404);
     <p style="margin-top:16px;"><a href="<?= BASE_URL ?>pages/shop.php" style="color:var(--pink-deep);font-weight:500;">Browse the shop</a></p>
   </div>
 </div>
+<div class="toast" id="toast"></div>
+<script src="<?= BASE_URL ?>assets/js/main.js"></script>
 </body>
 </html>
