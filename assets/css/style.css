@@ -408,7 +408,7 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
   .testimonials, .newsletter { padding: 60px 20px; }
   footer { padding: 48px 20px 0; }
-  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-inner { grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
   .footer-brand { grid-column: 1 / -1; }
   .about-grid { grid-template-columns: 1fr; }
   .social-cards { grid-template-columns: 1fr; }

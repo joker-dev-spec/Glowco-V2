@@ -21,7 +21,7 @@ $csrf = generate_csrf_token();
     <p class="hero-eyebrow">Crafted for your skin</p>
     <h1 class="hero-title">Your skin<br><em>deserves</em><br>the ritual.</h1>
     <p class="hero-sub">Luxurious body creams, perfumes &amp; lotions made with natural butters, botanical oils, and ingredients that actually work.</p>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:center;">
       <a href="<?= BASE_URL ?>pages/shop.php" class="btn-primary">Shop the collection</a>
     </div>
   </div>
