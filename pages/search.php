@@ -29,9 +29,10 @@ $csrf = generate_csrf_token();
   <p class="section-eyebrow">Search</p>
   <h1>Find your<br><em>perfect product.</em></h1>
 
-  <form method="GET" action="search.php" class="shop-search" style="max-width:480px;margin:24px auto 0;">
-    <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Search products...">
-    <button type="submit">Search</button>
+  <form method="GET" action="search.php" style="max-width:480px;margin:24px auto 0;display:flex;background:var(--white);border-radius:50px;overflow:hidden;border:1.5px solid var(--pink-soft);box-shadow:var(--shadow);">
+    <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Search products..."
+           style="flex:1;border:none;outline:none;padding:14px 20px;font-size:.9rem;font-family:var(--font-body);background:transparent;color:var(--text);">
+    <button type="submit" style="background:var(--pink-deep);color:var(--white);border:none;padding:14px 22px;font-size:.9rem;font-weight:500;cursor:pointer;">Search</button>
   </form>
 </section>
 
@@ -51,51 +52,7 @@ $csrf = generate_csrf_token();
     </p>
     <div class="product-grid">
       <?php while ($p = $results->fetch_assoc()): ?>
-        <div class="product-card">
-          <div class="product-img-wrap">
-            <?php if ($p['image_path']): ?>
-              <a href="<?= BASE_URL ?>pages/product.php?id=<?= $p['id'] ?>">
-                <img src="<?= BASE_URL . htmlspecialchars($p['image_path']) ?>"
-                     alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy"
-                     onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-size:3rem;\'>🧴</div>'">
-              </a>
-            <?php else: ?>
-              <a href="<?= BASE_URL ?>pages/product.php?id=<?= $p['id'] ?>">
-                <div style="width:100%;height:100%;background:var(--pink-soft);display:flex;align-items:center;justify-content:center;font-size:3rem;">🧴</div>
-              </a>
-            <?php endif; ?>
-          </div>
-          <div class="product-info">
-            <h3>
-              <a href="<?= BASE_URL ?>pages/product.php?id=<?= $p['id'] ?>"
-                 style="color:var(--plum);"><?= htmlspecialchars($p['name']) ?></a>
-            </h3>
-            <?php if (!empty($p['description'])): ?>
-              <p class="product-desc"><?= htmlspecialchars(substr($p['description'], 0, 80)) ?>...</p>
-            <?php endif; ?>
-            <div class="product-footer">
-              <span class="product-price">₦<?= number_format($p['price'], 0) ?></span>
-              <div class="product-actions">
-                <?php if ($p['stock'] > 0): ?>
-                  <form method="POST" action="<?= BASE_URL ?>cart/add.php" style="display:inline;">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
-                    <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="icon-cart" title="Add to cart">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                        <line x1="3" y1="6" x2="21" y2="6"/>
-                        <path d="M16 10a4 4 0 01-8 0"/>
-                      </svg>
-                    </button>
-                  </form>
-                <?php else: ?>
-                  <span class="out-of-stock">Out of Stock</span>
-                <?php endif; ?>
-              </div>
-            </div>
-          </div>
-        </div>
+        <?php include ROOT_PATH . 'includes/product_card.php'; ?>
       <?php endwhile; ?>
     </div>
   <?php endif; ?>
