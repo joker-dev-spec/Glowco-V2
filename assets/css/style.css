@@ -162,11 +162,11 @@ main { flex: 1; }
 .product-desc { font-size: .82rem; color: var(--text-soft); margin-bottom: 10px; line-height: 1.5; }
 .product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
 .product-price { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--plum); }
-.product-actions { display: flex; gap: 4px; align-items: center; }
-.icon-cart { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--pink); background: transparent; color: var(--plum); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.icon-cart svg { width: 13px; height: 13px; }
+.product-actions { display: flex; gap: 3px; align-items: center; }
+.icon-cart { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--pink); background: transparent; color: var(--plum); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.icon-cart svg { width: 11px; height: 11px; }
 .icon-cart:hover { background: var(--pink-deep); border-color: var(--pink-deep); color: var(--white); transform: scale(1.1); }
-.wish-btn { background: none; border: none; font-size: .85rem; cursor: pointer; line-height: 1; color: #ccc; transition: color .2s, transform .2s; padding: 1px; }
+.wish-btn { background: none; border: none; font-size: .75rem; cursor: pointer; line-height: 1; color: #ccc; transition: color .2s, transform .2s; padding: 0; }
 .wish-btn.wished { color: var(--pink-deep); }
 .wish-btn:hover { transform: scale(1.15); }
 .btn-sm { padding: 8px 22px !important; font-size: .78rem !important; }
