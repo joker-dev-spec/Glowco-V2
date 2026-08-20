@@ -59,6 +59,10 @@ include ROOT_PATH . 'includes/header.php';
            style="background:transparent;border:1.5px solid var(--pink);color:var(--plum);text-align:center;">
           My Wishlist
         </a>
+        <a href="<?= BASE_URL ?>user/reviews.php" class="btn-primary"
+           style="background:transparent;border:1.5px solid var(--pink);color:var(--plum);text-align:center;">
+          My Reviews
+        </a>
         <a href="<?= BASE_URL ?>auth/logout.php"
            style="display:block;font-size:.82rem;color:var(--text-soft);margin-top:4px;text-align:center;">
           Sign out
