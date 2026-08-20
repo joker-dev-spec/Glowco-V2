@@ -84,7 +84,7 @@ include ROOT_PATH . 'includes/header.php';
                 <span>Order #<?= $order['id'] ?></span>
                 <span class="status status--<?= $order['status'] ?>"><?= ucfirst($order['status']) ?></span>
                 <span style="color:var(--text-soft);font-size:.82rem;"><?= date('M j, Y', strtotime($order['created_at'])) ?></span>
-                <span>₦<?= number_format($order['total_amount'], 2) ?></span>
+                <span>₦<?= number_format($order['total_amount'], 0) ?></span>
               </div>
             </div>
           <?php endwhile; ?>

@@ -40,7 +40,7 @@ $csrf = generate_csrf_token();
             <?php endif; ?>
           </td>
           <td style="font-weight:600;color:var(--plum);"><?= htmlspecialchars($row['name']) ?></td>
-          <td>₦<?= number_format($row['price'], 2) ?></td>
+          <td>₦<?= number_format($row['price'], 0) ?></td>
           <td>
             <span style="color:<?= $row['stock'] > 0 ? '#2e7d32' : '#c62828' ?>;font-weight:600;">
               <?= $row['stock'] ?>

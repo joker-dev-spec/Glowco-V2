@@ -82,7 +82,7 @@ include ROOT_PATH . 'includes/admin_header.php';
         <tr>
           <td><?= $row['id'] ?></td>
           <td><?= htmlspecialchars($row['name']) ?></td>
-          <td>₦<?= number_format($row['total_amount'], 2) ?></td>
+          <td>₦<?= number_format($row['total_amount'], 0) ?></td>
           <td><span class="status status--<?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
           <td><?= date('M j, Y', strtotime($row['created_at'])) ?></td>
           <td><a href="order_detail.php?id=<?= $row['id'] ?>">View</a></td>

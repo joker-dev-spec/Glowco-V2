@@ -83,7 +83,7 @@ $csrf = generate_csrf_token();
 
       <div style="background:var(--pink-soft);border-radius:var(--radius);padding:18px 22px;margin-top:20px;max-width:520px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <span style="color:var(--plum);font-weight:600;">Amount to transfer</span>
-        <span style="font-family:var(--font-display);font-size:1.4rem;font-weight:600;color:var(--plum);">₦<?= number_format($order['total_amount'], 2) ?></span>
+        <span style="font-family:var(--font-display);font-size:1.4rem;font-weight:600;color:var(--plum);">₦<?= number_format($order['total_amount'], 0) ?></span>
       </div>
 
       <?php if ($order['payment_ref']): ?>

@@ -66,7 +66,7 @@ include ROOT_PATH . 'includes/admin_header.php';
             <td style="font-weight:700;">#<?= $row['id'] ?></td>
             <td><?= htmlspecialchars($row['name']) ?></td>
             <td style="color:var(--text-soft);font-size:.82rem;"><?= htmlspecialchars($row['email']) ?></td>
-            <td style="font-weight:600;">₦<?= number_format($row['total_amount'], 2) ?></td>
+            <td style="font-weight:600;">₦<?= number_format($row['total_amount'], 0) ?></td>
             <td><span class="status status--<?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
             <td style="color:var(--text-soft);font-size:.78rem;"><?= htmlspecialchars($row['payment_ref'] ?? '—') ?></td>
             <td style="font-size:.82rem;"><?= date('M j, Y', strtotime($row['created_at'])) ?></td>

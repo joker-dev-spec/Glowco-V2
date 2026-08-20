@@ -37,7 +37,7 @@ include ROOT_PATH . 'includes/header.php';
             <span>Order #<?= $order['id'] ?></span>
             <span class="status status--<?= $order['status'] ?>"><?= ucfirst($order['status']) ?></span>
             <span style="color:var(--text-soft);font-size:.82rem;"><?= date('M j, Y', strtotime($order['created_at'])) ?></span>
-            <span>₦<?= number_format($order['total_amount'], 2) ?></span>
+            <span>₦<?= number_format($order['total_amount'], 0) ?></span>
           </div>
 
           <?php
@@ -58,7 +58,7 @@ include ROOT_PATH . 'includes/header.php';
                        alt="<?= htmlspecialchars($item['name']) ?>">
                 <?php endif; ?>
                 <span><?= htmlspecialchars($item['name']) ?> &times;<?= $item['quantity'] ?></span>
-                <span style="margin-left:auto;">₦<?= number_format($item['price_at_purchase'], 2) ?></span>
+                <span style="margin-left:auto;">₦<?= number_format($item['price_at_purchase'], 0) ?></span>
               </li>
             <?php endwhile; ?>
           </ul>

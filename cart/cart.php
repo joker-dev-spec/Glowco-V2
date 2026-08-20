@@ -62,7 +62,7 @@ $csrf = generate_csrf_token();
                   <a href="<?= BASE_URL ?>pages/product.php?id=<?= (int)$row['product_id'] ?>"
                      style="color:var(--plum);"><?= htmlspecialchars($row['name']) ?></a>
                 </h3>
-                <p>₦<?= number_format($row['price'], 2) ?> each</p>
+                <p>₦<?= number_format($row['price'], 0) ?> each</p>
               </div>
               <div class="qty-controls">
                 <form method="POST" action="<?= BASE_URL ?>cart/update.php" class="qty-form">
@@ -82,7 +82,7 @@ $csrf = generate_csrf_token();
                 </form>
               </div>
               <div class="cart-item__subtotal" style="font-weight:600;color:var(--plum);min-width:90px;text-align:right;">
-                ₦<?= number_format($row['subtotal'], 2) ?>
+                ₦<?= number_format($row['subtotal'], 0) ?>
               </div>
               <form method="POST" action="<?= BASE_URL ?>cart/remove.php" style="display:inline;">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
@@ -96,7 +96,7 @@ $csrf = generate_csrf_token();
 
         <?php if ($total < 15000): ?>
           <div style="margin-top:20px;padding:16px 20px;background:var(--pink-soft);border-radius:var(--radius);font-size:.88rem;color:var(--plum);">
-            🚚 Add ₦<?= number_format(15000 - $total, 2) ?> more for free shipping
+            🚚 Add ₦<?= number_format(15000 - $total, 0) ?> more for free shipping
           </div>
         <?php else: ?>
           <div style="margin-top:20px;padding:16px 20px;background:rgba(92,184,92,.1);border-radius:var(--radius);font-size:.88rem;color:#2e7d32;">
@@ -109,17 +109,17 @@ $csrf = generate_csrf_token();
         <h2>Order Summary</h2>
         <div class="summary-row">
           <span>Subtotal</span>
-          <span>₦<?= number_format($total, 2) ?></span>
+          <span>₦<?= number_format($total, 0) ?></span>
         </div>
         <div class="summary-row">
           <span>Shipping</span>
           <span style="color:<?= $shipping === 0 ? '#2e7d32' : 'var(--text-soft)' ?>">
-            <?= $shipping === 0 ? 'Free' : '₦' . number_format($shipping, 2) ?>
+            <?= $shipping === 0 ? 'Free' : '₦' . number_format($shipping, 0) ?>
           </span>
         </div>
         <div class="summary-row total">
           <span>Total</span>
-          <span>₦<?= number_format($grand, 2) ?></span>
+          <span>₦<?= number_format($grand, 0) ?></span>
         </div>
 
         <a href="<?= BASE_URL ?>cart/checkout.php" class="btn-primary"

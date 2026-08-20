@@ -80,7 +80,7 @@ $csrf = generate_csrf_token();
           <p class="product-desc"><?= htmlspecialchars(substr($p['description'], 0, 80)) ?>...</p>
         <?php endif; ?>
         <div class="product-footer">
-          <span class="product-price">₦<?= number_format($p['price'], 2) ?></span>
+          <span class="product-price">₦<?= number_format($p['price'], 0) ?></span>
           <div class="product-actions">
             <?php if (is_logged_in()): ?>
               <form method="POST" action="<?= BASE_URL ?>wishlist/add.php" style="display:inline;">

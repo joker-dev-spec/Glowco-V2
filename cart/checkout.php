@@ -169,7 +169,7 @@ $csrf = generate_csrf_token();
         </div>
 
         <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;">
-          Place Order — Transfer ₦<?= number_format($total, 2) ?>
+          Place Order — Transfer ₦<?= number_format($total, 0) ?>
         </button>
         <p style="font-size:.78rem;color:var(--text-soft);margin-top:10px;text-align:center;">
           You'll get OPay &amp; Access Bank details to transfer to. No card needed.
@@ -191,24 +191,24 @@ $csrf = generate_csrf_token();
               <div style="color:var(--text-soft);font-size:.78rem;">Qty: <?= (int)$item['quantity'] ?></div>
             </div>
             <div style="font-size:.85rem;font-weight:600;color:var(--plum);">
-              ₦<?= number_format($item['price'] * $item['quantity'], 2) ?>
+              ₦<?= number_format($item['price'] * $item['quantity'], 0) ?>
             </div>
           </div>
         <?php endforeach; ?>
       </div>
       <div class="summary-row">
         <span>Subtotal</span>
-        <span>₦<?= number_format($subtotal, 2) ?></span>
+        <span>₦<?= number_format($subtotal, 0) ?></span>
       </div>
       <div class="summary-row">
         <span>Shipping</span>
         <span style="color:<?= $shipping === 0 ? '#2e7d32' : 'var(--text-soft)' ?>">
-          <?= $shipping === 0 ? 'Free' : '₦' . number_format($shipping, 2) ?>
+          <?= $shipping === 0 ? 'Free' : '₦' . number_format($shipping, 0) ?>
         </span>
       </div>
       <div class="summary-row total">
         <span>Total</span>
-        <span>₦<?= number_format($total, 2) ?></span>
+        <span>₦<?= number_format($total, 0) ?></span>
       </div>
       <a href="<?= BASE_URL ?>cart/cart.php"
          style="display:block;text-align:center;margin-top:12px;font-size:.85rem;color:var(--text-soft);">

@@ -42,7 +42,7 @@ include ROOT_PATH . 'includes/admin_header.php';
     <div style="background:var(--white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);">
       <h2 style="font-size:1.1rem;color:var(--plum);margin-bottom:16px;">Order</h2>
       <div class="summary-row"><span>Status</span><span class="status status--<?= $order['status'] ?>"><?= ucfirst($order['status']) ?></span></div>
-      <div class="summary-row"><span>Total</span><span style="font-weight:700;color:var(--plum);">₦<?= number_format($order['total_amount'], 2) ?></span></div>
+      <div class="summary-row"><span>Total</span><span style="font-weight:700;color:var(--plum);">₦<?= number_format($order['total_amount'], 0) ?></span></div>
       <div class="summary-row"><span>Date</span><span><?= date('M j, Y g:ia', strtotime($order['created_at'])) ?></span></div>
       <div class="summary-row"><span>Payment Ref</span><span style="font-size:.78rem;"><?= htmlspecialchars($order['payment_ref'] ?? '—') ?></span></div>
       <div style="margin-top:20px;">
@@ -82,8 +82,8 @@ include ROOT_PATH . 'includes/admin_header.php';
             </div>
           </td>
           <td><?= (int)$item['quantity'] ?></td>
-          <td>₦<?= number_format($item['price_at_purchase'], 2) ?></td>
-          <td style="font-weight:600;">₦<?= number_format($item['price_at_purchase'] * $item['quantity'], 2) ?></td>
+          <td>₦<?= number_format($item['price_at_purchase'], 0) ?></td>
+          <td style="font-weight:600;">₦<?= number_format($item['price_at_purchase'] * $item['quantity'], 0) ?></td>
         </tr>
       <?php endwhile; ?>
     </tbody>
