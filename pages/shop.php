@@ -74,7 +74,7 @@ $csrf = generate_csrf_token();
              autocomplete="off" autofocus>
       <button type="button" class="floating-search__clear" id="searchClear"
               style="display:none;" aria-label="Clear search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
@@ -169,7 +169,7 @@ function render_product_card($p) {
               <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
               <input type="hidden" name="quantity" value="1">
               <button type="submit" class="icon-cart" title="Add to cart">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                <svg viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                   <line x1="3" y1="6" x2="21" y2="6"/>
