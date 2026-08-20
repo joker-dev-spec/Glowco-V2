@@ -41,10 +41,96 @@
 </footer>
 
 <div class="toast" id="toast"></div>
+
+<!-- Quick View Modal -->
+<div class="qv-overlay" id="qvOverlay">
+  <div class="qv-modal" id="qvModal">
+    <button class="qv-close" id="qvClose">&times;</button>
+    <div class="qv-img" id="qvImg"></div>
+    <div class="qv-body">
+      <span class="qv-category" id="qvCategory"></span>
+      <h2 class="qv-name" id="qvName"></h2>
+      <div class="qv-price" id="qvPrice"></div>
+      <p class="qv-desc" id="qvDesc"></p>
+      <div class="qv-stock" id="qvStock"></div>
+      <div class="qv-actions" id="qvActions"></div>
+    </div>
+  </div>
+</div>
+
 <script src="<?= BASE_URL ?>assets/js/main.js"></script>
 <script>
   window.addEventListener('scroll', () => {
     document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Quick View Modal
+  document.addEventListener('DOMContentLoaded', () => {
+    const overlay  = document.getElementById('qvOverlay');
+    const modal    = document.getElementById('qvModal');
+    const closeBtn = document.getElementById('qvClose');
+    const base     = '<?= BASE_URL ?>';
+
+    // Intercept clicks on product cards
+    document.querySelectorAll('.product-card .product-img-wrap, .product-card .product-info h3 a').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        const card = el.closest('.product-card');
+        const link = card.querySelector('.product-info h3 a');
+        const url  = link ? link.getAttribute('href') : '';
+        const id   = url.match(/id=(\d+)/);
+        if (id) openQuickView(id[1]);
+      });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function openQuickView(productId) {
+      fetch(base + 'pages/product_ajax.php?id=' + productId)
+        .then(r => r.json())
+        .then(p => {
+          if (!p) return;
+          document.getElementById('qvImg').innerHTML = p.image_url
+            ? '<img src="' + esc(p.image_url) + '" alt="' + esc(p.name) + '">'
+            : '<div class="product-img-fallback" style="height:100%;font-size:4rem;">🧴</div>';
+          document.getElementById('qvCategory').textContent = p.category || '';
+          document.getElementById('qvName').textContent = p.name;
+          document.getElementById('qvPrice').textContent = p.price_formatted;
+          document.getElementById('qvDesc').textContent = p.description || 'No description available.';
+          const inStock = parseInt(p.stock) > 0;
+          document.getElementById('qvStock').innerHTML = inStock
+            ? '<span class="qv-stock--in">● In Stock</span>'
+            : '<span class="qv-stock--out">● Out of Stock</span>';
+
+          let actions = '';
+          if (inStock) {
+            actions += '<form method="POST" action="' + base + 'cart/add.php" style="flex:1;display:flex;">'
+              + '<input type="hidden" name="csrf_token" value="' + esc(p.csrf) + '">'
+              + '<input type="hidden" name="product_id" value="' + p.id + '">'
+              + '<input type="hidden" name="quantity" value="1">'
+              + '<button type="submit" class="qv-btn-cart" style="flex:1;">Add to Cart</button>'
+              + '</form>';
+          }
+          actions += '<a href="' + p.url + '" class="qv-btn-view">View Full Details</a>';
+          document.getElementById('qvActions').innerHTML = actions;
+
+          overlay.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        });
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
   });
 </script>
 </body>
