@@ -83,24 +83,24 @@ $csrf = generate_csrf_token();
     <div class="floating-search__dropdown" id="searchDropdown"></div>
   </div>
 
-  <form method="GET" style="display:flex;justify-content:center;margin-top:16px;">
-    <?php if ($category): ?>
-      <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
-    <?php endif; ?>
-    <?php if ($q): ?>
-      <input type="hidden" name="q" value="<?= htmlspecialchars($q) ?>">
-    <?php endif; ?>
-    <select name="sort" onchange="this.form.submit()"
-            style="width:auto;padding:10px 18px;border-radius:50px;border:1.5px solid var(--pink-soft);font-size:.85rem;background:var(--white);color:var(--text);cursor:pointer;">
-      <option value="newest"     <?= $sort === 'newest'     ? 'selected' : '' ?>>Newest</option>
-      <option value="price_asc"  <?= $sort === 'price_asc'  ? 'selected' : '' ?>>Price: Low to High</option>
-      <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: High to Low</option>
-      <option value="name"       <?= $sort === 'name'       ? 'selected' : '' ?>>Name A–Z</option>
-    </select>
-  </form>
+  <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap;">
+    <form method="GET" style="display:flex;">
+      <?php if ($category): ?>
+        <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
+      <?php endif; ?>
+      <?php if ($q): ?>
+        <input type="hidden" name="q" value="<?= htmlspecialchars($q) ?>">
+      <?php endif; ?>
+      <select name="sort" onchange="this.form.submit()"
+              style="width:auto;padding:10px 18px;border-radius:50px;border:1.5px solid var(--pink-soft);font-size:.85rem;background:var(--white);color:var(--text);cursor:pointer;">
+        <option value="newest"     <?= $sort === 'newest'     ? 'selected' : '' ?>>Newest</option>
+        <option value="price_asc"  <?= $sort === 'price_asc'  ? 'selected' : '' ?>>Price: Low to High</option>
+        <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Price: High to Low</option>
+        <option value="name"       <?= $sort === 'name'       ? 'selected' : '' ?>>Name A–Z</option>
+      </select>
+    </form>
 
-  <?php if (!$category): ?>
-  <div style="display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
+    <?php if (!$category): ?>
     <a href="<?= BASE_URL ?>pages/shop.php?category=Perfume<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
        class="btn-primary btn-sm">
       Perfumes
@@ -109,8 +109,8 @@ $csrf = generate_csrf_token();
        class="btn-primary btn-sm">
       Body Lotions
     </a>
+    <?php endif; ?>
   </div>
-  <?php endif; ?>
 </section>
 
 <?php
