@@ -41,7 +41,7 @@ $csrf = generate_csrf_token();
       </span>
       <h1 style="font-size:clamp(1.8rem,4vw,2.8rem);color:var(--plum);margin-bottom:8px;"><?= htmlspecialchars($product['name']) ?></h1>
       <p style="font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--plum);">
-        ₦<?= number_format($product['price'], 2) ?>
+        ₦<?= number_format($product['price'], 0) ?>
       </p>
     </div>
 

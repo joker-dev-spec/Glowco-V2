@@ -74,7 +74,7 @@ $csrf = generate_csrf_token();
               <p class="product-desc"><?= htmlspecialchars(substr($p['description'], 0, 80)) ?>...</p>
             <?php endif; ?>
             <div class="product-footer">
-              <span class="product-price">₦<?= number_format($p['price'], 2) ?></span>
+              <span class="product-price">₦<?= number_format($p['price'], 0) ?></span>
               <div class="product-actions">
                 <?php if ($p['stock'] > 0): ?>
                   <form method="POST" action="<?= BASE_URL ?>cart/add.php" style="display:inline;">

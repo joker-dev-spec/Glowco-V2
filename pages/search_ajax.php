@@ -34,7 +34,7 @@ $results = array_map(function ($r) use ($conn) {
     return [
         'id'       => (int)$r['id'],
         'name'     => $r['name'],
-        'price'    => '₦' . number_format((float)$r['price'], 2),
+        'price'    => '₦' . number_format((float)$r['price'], 0),
         'image'    => $r['image_path'] ? BASE_URL . $r['image_path'] : null,
         'stock'    => (int)$r['stock'],
         'category' => $r['category'] ?? '',

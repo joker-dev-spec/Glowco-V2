@@ -53,10 +53,6 @@ $lotions      = $show_lotions ? build_query($conn, 'Body Lotion', $like, $order_
 $lotion_total = 0;
 if ($show_lotions && $lotions) $lotion_total = $lotions->num_rows;
 
-// Count total in each category (for "view all" buttons)
-$count_perfumes = $conn->query("SELECT COUNT(*) AS c FROM products WHERE category = 'Perfume'")->fetch_assoc()['c'];
-$count_lotions  = $conn->query("SELECT COUNT(*) AS c FROM products WHERE category = 'Body Lotion'")->fetch_assoc()['c'];
-
 $page_title = 'Shop — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
 $csrf = generate_csrf_token();
@@ -102,6 +98,19 @@ $csrf = generate_csrf_token();
       <option value="name"       <?= $sort === 'name'       ? 'selected' : '' ?>>Name A–Z</option>
     </select>
   </form>
+
+  <?php if (!$category): ?>
+  <div style="display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
+    <a href="<?= BASE_URL ?>pages/shop.php?category=Perfume<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
+       class="btn-primary" style="font-size:.82rem;padding:10px 28px;">
+      Perfumes
+    </a>
+    <a href="<?= BASE_URL ?>pages/shop.php?category=Body+Lotion<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
+       class="btn-primary" style="font-size:.82rem;padding:10px 28px;">
+      Body Lotions
+    </a>
+  </div>
+  <?php endif; ?>
 </section>
 
 <?php
@@ -145,7 +154,7 @@ function render_product_card($p) {
         <p class="product-desc"><?= htmlspecialchars(substr($p['description'], 0, 80)) ?>...</p>
       <?php endif; ?>
       <div class="product-footer">
-        <span class="product-price">₦<?= number_format($p['price'], 2) ?></span>
+        <span class="product-price">₦<?= number_format($p['price'], 0) ?></span>
         <div class="product-actions">
           <?php if ($p['stock'] > 0): ?>
             <?php if ($logged_in): ?>
@@ -183,14 +192,8 @@ function render_product_card($p) {
 <?php if ($show_perfumes): ?>
 <!-- ── PERFUMES SECTION ───────────────────────────────────────────── -->
 <section class="products-section">
-  <div class="category-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <div class="category-header">
     <h2>Perfumes</h2>
-    <?php if (!$category): ?>
-      <a href="<?= BASE_URL ?>pages/shop.php?category=Perfume<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
-         class="btn-primary" style="font-size:.82rem;padding:10px 24px;">
-        Shop Perfumes (<?= $count_perfumes ?>)
-      </a>
-    <?php endif; ?>
   </div>
 
   <?php if ($perfumes->num_rows === 0): ?>
@@ -218,14 +221,8 @@ function render_product_card($p) {
 <?php if ($show_lotions): ?>
 <!-- ── BODY LOTIONS SECTION ──────────────────────────────────────── -->
 <section class="products-section" style="padding-top:0;">
-  <div class="category-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <div class="category-header">
     <h2>Body Lotions</h2>
-    <?php if (!$category): ?>
-      <a href="<?= BASE_URL ?>pages/shop.php?category=Body+Lotion<?= $sort !== 'newest' ? '&sort=' . urlencode($sort) : '' ?>"
-         class="btn-primary" style="font-size:.82rem;padding:10px 24px;">
-        Shop Body Lotions (<?= $count_lotions ?>)
-      </a>
-    <?php endif; ?>
   </div>
 
   <?php if ($lotions->num_rows === 0): ?>
