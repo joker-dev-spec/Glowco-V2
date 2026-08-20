@@ -157,4 +157,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ── Scroll-to-top button ──────────────────────────────────────
+    let scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (!scrollTopBtn) {
+        scrollTopBtn = document.createElement('button');
+        scrollTopBtn.id = 'scrollTopBtn';
+        scrollTopBtn.innerHTML = '&uarr;';
+        scrollTopBtn.setAttribute('aria-label', 'Scroll to top');
+        scrollTopBtn.style.cssText =
+            'position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;' +
+            'border:none;border-radius:50%;background:var(--plum,#6b2fa0);color:#fff;' +
+            'font-size:1.25rem;cursor:pointer;opacity:0;pointer-events:none;' +
+            'transition:opacity .3s ease,transform .3s ease;z-index:999;' +
+            'box-shadow:0 2px 10px rgba(0,0,0,.25);';
+        document.body.appendChild(scrollTopBtn);
+    }
+    window.addEventListener('scroll', () => {
+        const visible = window.scrollY > 400;
+        scrollTopBtn.style.opacity = visible ? '1' : '0';
+        scrollTopBtn.style.pointerEvents = visible ? 'auto' : 'none';
+    }, { passive: true });
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ── FAQ accordion ─────────────────────────────────────────────
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            if (!item) return;
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(openItem => {
+                openItem.classList.remove('open');
+            });
+            if (!wasOpen) item.classList.add('open');
+        });
+    });
+
+    // ── Product image zoom (custom-property driven) ───────────────
+    document.querySelectorAll('.product-detail .zoom-container, .product-detail .product-image').forEach(container => {
+        container.addEventListener('mousemove', e => {
+            const rect = container.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+            const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+            container.style.setProperty('--mouse-x', x + '%');
+            container.style.setProperty('--mouse-y', y + '%');
+        });
+    });
+
+    // ── Page transition (fade-in on load) ─────────────────────────
+    document.body.classList.add('page-transition');
+
 });

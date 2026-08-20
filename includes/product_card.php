@@ -18,6 +18,9 @@ $in_stock      = (int)($p['stock'] ?? 0) > 0;
     <?php else: ?>
       <div class="product-img-fallback">🧴</div>
     <?php endif; ?>
+    <?php if ((int)($p['stock'] ?? 0) > 0 && (int)$p['stock'] <= 5): ?>
+      <span class="badge-low-stock">Only <?= (int)$p['stock'] ?> left</span>
+    <?php endif; ?>
   </a>
 
   <div class="product-info">

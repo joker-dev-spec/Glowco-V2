@@ -602,6 +602,192 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
 /* ─── ANIMATIONS ──────────────────────────────────────────────────── */
 @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
+/* ─── SCROLL TO TOP ───────────────────────────────────────────────── */
+.scroll-top {
+  position: fixed; bottom: 32px; right: 32px; z-index: 800;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--plum); color: var(--white);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  opacity: 0; visibility: hidden; transform: translateY(16px);
+  transition: opacity var(--transition), visibility var(--transition), transform var(--transition), background var(--transition);
+  box-shadow: 0 4px 16px rgba(44,26,46,0.25);
+}
+.scroll-top.visible {
+  opacity: 1; visibility: visible; transform: translateY(0);
+  animation: fadeInUp .35s ease;
+}
+.scroll-top:hover {
+  background: var(--pink-deep);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(194,7,60,0.3);
+}
+
+/* ─── SKELETON LOADING ────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--pink-soft) 25%, rgba(255,255,255,.6) 50%, var(--pink-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-img { aspect-ratio: 1/1; width: 100%; border-radius: var(--radius-lg); }
+.skeleton-text { height: 14px; width: 80%; margin-top: 10px; }
+.skeleton-text-sm { height: 10px; width: 60%; margin-top: 8px; }
+
+/* ─── PRODUCT IMAGE ZOOM ──────────────────────────────────────────── */
+.zoom-container {
+  position: relative; overflow: hidden; border-radius: var(--radius-lg);
+  cursor: crosshair;
+}
+.zoom-container img {
+  transition: transform .25s ease;
+  transform-origin: var(--mouse-x, center) var(--mouse-y, center);
+  will-change: transform;
+}
+.zoom-container:hover img {
+  transform: scale(1.8);
+}
+
+/* ─── LOW STOCK BADGE ─────────────────────────────────────────────── */
+.badge-low-stock {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(224,92,92,.9); color: var(--white);
+  font-size: .68rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 50px;
+  letter-spacing: .04em; text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+/* ─── FAQ ACCORDION ───────────────────────────────────────────────── */
+.faq-item {
+  border-bottom: 1px solid var(--pink-soft);
+}
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 20px 0;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+  color: var(--plum); text-align: left;
+}
+.faq-arrow {
+  font-size: .85rem; color: var(--text-soft);
+  transition: transform var(--transition);
+  flex-shrink: 0; margin-left: 16px;
+}
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s cubic-bezier(0.4,0,0.2,1), padding .3s ease;
+  font-size: .92rem; color: var(--text-soft); line-height: 1.7;
+}
+.faq-item.open .faq-answer {
+  max-height: 500px; padding-bottom: 20px;
+}
+.faq-item.open .faq-arrow {
+  transform: rotate(180deg);
+}
+
+/* ─── REVIEW STYLES ───────────────────────────────────────────────── */
+.reviews-section { padding: 60px 40px; max-width: 900px; margin: 0 auto; }
+.review-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 28px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.review-stars { color: var(--gold); font-size: 1rem; margin-bottom: 10px; letter-spacing: 2px; }
+.review-form {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 32px; box-shadow: var(--shadow); margin-top: 32px;
+}
+.review-rating-select {
+  display: flex; flex-direction: row; gap: 6px; margin-bottom: 16px;
+}
+.review-rating-select .star-btn {
+  font-size: 1.5rem; color: var(--pink-soft); cursor: pointer;
+  transition: color .15s, transform .15s; background: none; border: none;
+}
+.review-rating-select .star-btn.on { color: var(--gold); }
+.review-rating-select .star-btn:hover { transform: scale(1.2); }
+
+/* ─── RELATED PRODUCTS ────────────────────────────────────────────── */
+.related-section {
+  margin-top: 60px; padding: 60px 40px;
+  max-width: 1200px; margin-left: auto; margin-right: auto;
+}
+.related-section .section-title { margin-bottom: 32px; }
+
+/* ─── INSTAGRAM EMBED ─────────────────────────────────────────────── */
+.instagram-section { text-align: center; padding: 60px 40px; }
+.instagram-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; max-width: 900px; margin: 32px auto 0;
+}
+.instagram-item {
+  aspect-ratio: 1/1; overflow: hidden; border-radius: var(--radius-lg);
+  position: relative;
+}
+.instagram-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .5s ease;
+}
+.instagram-item:hover img { transform: scale(1.08); }
+.instagram-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--pink-soft) 0%, var(--rose) 100%);
+  color: var(--white); text-decoration: none; gap: 10px;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.instagram-item:hover { transform: scale(1.04); box-shadow: var(--shadow-lg); }
+.ig-icon { font-size: 2rem; }
+.ig-label { font-size: .8rem; font-weight: 600; letter-spacing: .03em; }
+
+/* ─── FAQ SECTION WRAPPER ──────────────────────────────────────────── */
+.faq-section {
+  max-width: 760px; margin: 0 auto;
+  padding: 60px 40px;
+}
+.faq-list { margin-top: 32px; }
+
+/* ─── PAGE TRANSITION ─────────────────────────────────────────────── */
+.page-transition { animation: pageFadeIn .4s ease; }
+@keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── ABOUT PAGE ENHANCEMENTS ─────────────────────────────────────── */
+.about-hero {
+  text-align: center; padding: 140px 40px 80px;
+  background: linear-gradient(135deg, var(--ivory) 0%, #FFE0EC 50%, var(--cream) 100%);
+}
+.about-hero h1 { font-size: clamp(2.4rem, 5vw, 4rem); color: var(--plum); margin-bottom: 16px; }
+.about-hero p { color: var(--text-soft); font-size: 1.05rem; max-width: 540px; margin: 0 auto; line-height: 1.7; }
+.about-values-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 28px; max-width: 960px; margin: 0 auto;
+  padding: 60px 40px;
+}
+.about-timeline {
+  position: relative; max-width: 600px; margin: 60px auto; padding-left: 32px;
+}
+.about-timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: var(--pink-soft);
+}
+.about-timeline .track-step { position: relative; margin-bottom: 28px; }
+.about-timeline .track-step::before {
+  content: ''; position: absolute; left: -28px; top: 4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--pink-deep); border: 3px solid var(--ivory);
+}
+
+/* ─── FLASH MESSAGE IMPROVEMENTS ──────────────────────────────────── */
+.flash { padding: 16px 24px; border-radius: var(--radius); margin-bottom: 16px; font-weight: 500; font-size: .9rem; }
+.flash--success { background: rgba(92,184,92,.12); color: #2e7d32; }
+.flash--error { background: rgba(224,92,92,.12); color: #c62828; }
+.flash--info { background: rgba(91,155,213,.12); color: #1565c0; }
+
 /* ─── RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   #mobileMenuBtn { display: flex; }

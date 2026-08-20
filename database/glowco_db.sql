@@ -90,6 +90,18 @@ CREATE TABLE rate_limits (
     UNIQUE KEY unique_rate_limit (action, ip_hash)
 ) ENGINE=InnoDB;
 
+CREATE TABLE reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating TINYINT NOT NULL,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_review (product_id, user_id)
+) ENGINE=InnoDB;
+
 -- Create your admin account manually (no credentials are shipped in this repo):
 --   INSERT INTO users (name, email, password_hash, role)
 --   VALUES ('Admin', 'admin@yourdomain.com',

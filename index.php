@@ -97,6 +97,102 @@ $csrf = generate_csrf_token();
   </div>
 </section>
 
+<section class="faq-section">
+  <div class="section-header">
+    <p class="section-eyebrow">Got Questions?</p>
+    <h2 class="section-title">Frequently asked questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>How long does shipping take?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>We deliver within 2-5 business days across Nigeria. Lagos deliveries typically arrive within 24-48 hours.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>Are your products safe for sensitive skin?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes! All our products are dermatologist tested, paraben-free, and made with natural ingredients. We recommend patch testing new products.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>What payment methods do you accept?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>We accept bank transfers to OPay and Access Bank. No card needed — just transfer and share your receipt reference.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>Do you offer refunds?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>We offer exchanges or refunds for damaged or defective products within 7 days of delivery. Contact us with your order number.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>Are your products cruelty-free?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>Absolutely. We never test on animals. All products are certified cruelty-free and paraben-free.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+        <span>Can I track my order?</span>
+        <span class="faq-arrow">▾</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes! Once your order is confirmed, you can track it from your account dashboard under 'My Orders'.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="instagram-section">
+  <div class="section-header">
+    <p class="section-eyebrow">Stay Connected</p>
+    <h2 class="section-title">Follow Us @okunborjanet85</h2>
+  </div>
+  <div class="instagram-grid">
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
+      <span class="ig-icon">📷</span>
+      <span class="ig-label">Follow on Instagram</span>
+    </a>
+  </div>
+</section>
+
 <?php include ROOT_PATH . 'includes/footer.php'; ?>
 
 <script>
