@@ -27,6 +27,7 @@ include ROOT_PATH . 'includes/admin_header.php';
         <th>Role</th>
         <th>Orders</th>
         <th>Joined</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -37,6 +38,11 @@ include ROOT_PATH . 'includes/admin_header.php';
           <td><span class="status <?= $u['role'] === 'admin' ? 'status--paid' : 'status--pending' ?>"><?= ucfirst($u['role']) ?></span></td>
           <td><?= (int)$u['order_count'] ?></td>
           <td style="font-size:.82rem;"><?= date('M j, Y', strtotime($u['created_at'])) ?></td>
+          <td>
+            <?php if ($u['role'] === 'customer'): ?>
+              <a href="reset_user_password.php?id=<?= (int)$u['id'] ?>" style="font-size:.78rem;color:var(--pink-deep);font-weight:600;">Reset password</a>
+            <?php endif; ?>
+          </td>
         </tr>
       <?php endwhile; ?>
     </tbody>

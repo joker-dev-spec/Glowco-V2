@@ -1,48 +1,14 @@
 <?php
 // --- auth/forgot_password.php ---
+// Self-service reset is disabled: there is no mail infrastructure on the
+// deployment, so reset links must never be rendered on-screen (that would let
+// anyone take over any account just by knowing the email address).
+// Password resets are handled manually by the shop owner from the admin panel.
 
 require_once dirname(__DIR__) . "/config/config.php";
 secure_session_start();
 header("Referrer-Policy: no-referrer");
 header('Cache-Control: no-store, no-cache, must-revalidate');
-
-$message = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!verify_csrf_token($_POST['csrf_token'] ?? null)) die("Invalid request.");
-
-    if (!rate_limit('forgot', 5, 900)) {
-        $message = "info|Too many reset requests from this network. Please try again later.";
-    } else {
-        $email = sanitize_input($_POST['email'] ?? '');
-        $conn  = get_db_connection();
-        $stmt  = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-
-        if ($stmt->get_result()->num_rows === 1) {
-            $token = bin2hex(random_bytes(32));
-            // Only the SHA-256 hash of the token is stored so a leaked DB can't be
-            // used to reset accounts; the raw token is sent to the user.
-            // Expiry uses MySQL NOW() so it stays consistent with the
-            // `reset_token_expires > NOW()` check regardless of PHP/DB timezones.
-            $stmt = $conn->prepare(
-                "UPDATE users SET reset_token = ?, reset_token_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?"
-            );
-            $stmt->bind_param("ss", hash('sha256', $token), $email);
-            $stmt->execute();
-
-            $reset_link = BASE_URL . "auth/reset_password.php?token={$token}";
-            $message    = "success|Reset link ready. <a href='{$reset_link}' style='color:var(--pink-deep);font-weight:600;'>Click here to reset your password.</a> In production this sends an email.";
-        } else {
-            $message = "info|If that email exists in our system, a reset link has been sent.";
-        }
-    }
-}
-
-$parts   = $message ? explode('|', $message, 2) : [];
-$msg_type = $parts[0] ?? '';
-$msg_text = $parts[1] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,32 +24,17 @@ $msg_text = $parts[1] ?? '';
   <div class="auth-card">
     <h2>Reset Password</h2>
 
-    <?php if ($msg_text): ?>
-      <div class="flash flash--<?= $msg_type === 'success' ? 'success' : 'info' ?>"
-           style="margin:0 0 20px;border-radius:var(--radius);">
-        <?= $msg_text ?>
-      </div>
-    <?php endif; ?>
+    <div class="flash flash--info" style="margin:0 0 20px;border-radius:var(--radius);">
+      For your security, password resets are handled by our team.
+      Send us a message and we'll set up a temporary password for you.
+    </div>
 
-    <?php if (!$msg_type || $msg_type !== 'success'): ?>
-      <form method="POST" action="forgot_password.php">
-        <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
-        <div>
-          <label>Your Email</label>
-          <input type="email" name="email" placeholder="your@email.com" required autofocus>
-        </div>
-        <button type="submit">Send Reset Link</button>
-      </form>
-    <?php else: ?>
-      <a href="<?= BASE_URL ?>auth/login.php" class="btn-primary"
-         style="display:block;text-align:center;margin-top:8px;">
-        Back to Login
-      </a>
-    <?php endif; ?>
+    <a href="<?= BASE_URL ?>pages/contact.php" class="btn-primary"
+       style="display:block;text-align:center;">
+      Contact Support
+    </a>
 
-    <?php if (!$msg_type || $msg_type !== 'success'): ?>
-      <p><a href="login.php">Back to Login</a></p>
-    <?php endif; ?>
+    <p style="margin-top:16px;"><a href="login.php">Back to Login</a></p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
