@@ -32,7 +32,7 @@ include ROOT_PATH . 'includes/header.php';
 
 <section class="about-section">
   <h2 style="text-align:center;margin-bottom:32px;">Our Journey</h2>
-  <div class="journey-grid">
+  <div class="values-list">
     <div class="value-item">
       <h4>2023</h4>
       <p>Founded in Lagos</p>

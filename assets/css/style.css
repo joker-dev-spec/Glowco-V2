@@ -337,20 +337,6 @@ body.admin-layout { background: #fdf0f4; }
 
 /* ─── ABOUT ───────────────────────────────────────────────────────── */
 .about-section { padding: 64px 40px; max-width: 1000px; margin: 0 auto; }
-.journey-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 24px; margin-top: 40px; text-align: center; }
-.journey-grid .value-item { background: transparent; box-shadow: none; padding: 12px 8px; position: relative; }
-.journey-grid .value-item h4 { font-size: 2rem; color: var(--plum); letter-spacing: .02em; }
-.journey-grid .value-item p { font-size: .85rem; }
-@media (min-width: 769px) {
-  .journey-grid .value-item:not(:last-child)::after {
-    content: '\2192';
-    position: absolute;
-    right: -21px;
-    top: 34%;
-    color: var(--pink-deep);
-    font-size: 1.15rem;
-  }
-}
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-top: 40px; }
 .about-text h2 { font-size: 2rem; color: var(--plum); margin-bottom: 16px; }
 .about-text p { color: var(--text-soft); line-height: 1.8; margin-bottom: 16px; }
@@ -822,7 +808,6 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   .footer-inner { grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
   .footer-brand { grid-column: 1 / -1; }
   .about-grid { grid-template-columns: 1fr; }
-  .journey-grid { grid-template-columns: repeat(2, 1fr); }
   .about-section { padding: 56px 20px; }
   .testimonial-card { padding: 24px; }
   .social-cards { grid-template-columns: 1fr; }
