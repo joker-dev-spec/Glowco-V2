@@ -30,9 +30,9 @@ include ROOT_PATH . 'includes/header.php';
   </div>
 </section>
 
-<section class="about-section">
+<section class="about-section about-section--wide">
   <h2 style="text-align:center;margin-bottom:32px;">Our Journey</h2>
-  <div class="about-grid" style="grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;">
+  <div class="journey-grid">
     <div class="value-item">
       <h4>2023</h4>
       <p>Founded in Lagos</p>
@@ -83,7 +83,7 @@ include ROOT_PATH . 'includes/header.php';
     <div class="about-img-placeholder">
       <img src="<?= BASE_URL ?>assets/images/founder.jpeg"
            alt="Founder of Glow Co."
-           onerror="this.style.display='none'">
+           onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22><rect fill=%22%23FDE0E8%22 width=%22400%22 height=%22500%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2272%22>✨</text></svg>'">
     </div>
     <div class="about-text">
       <h2>Meet Our Founder</h2>
@@ -92,23 +92,23 @@ include ROOT_PATH . 'includes/header.php';
   </div>
 </section>
 
-<section class="about-section">
+<section class="about-section about-section--wide">
   <h2 style="text-align:center;margin-bottom:32px;">What Our Customers Say</h2>
-  <div class="about-grid" style="grid-template-columns:repeat(3,1fr);gap:24px;">
+  <div class="testimonial-grid">
     <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
       <p>"I've tried so many body creams and nothing compares to Glow Co. My skin has never felt this soft and nourished. I'm a customer for life!"</p>
-      <strong>Adaeze O.</strong>
-      <span>Lagos, Nigeria</span>
+      <span class="reviewer">— Adaeze O., Lagos</span>
     </div>
     <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
       <p>"Finally, a brand that understands our skin. The shea butter blend is incredible — it absorbs so quickly and leaves the most beautiful glow."</p>
-      <strong>Folake M.</strong>
-      <span>Abuja, Nigeria</span>
+      <span class="reviewer">— Folake M., Abuja</span>
     </div>
     <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
       <p>"I bought the full set as a gift for my sister and she was obsessed. The packaging is gorgeous and the quality is unmatched. We're both hooked!"</p>
-      <strong>Ngozi E.</strong>
-      <span>Port Harcourt, Nigeria</span>
+      <span class="reviewer">— Ngozi E., Port Harcourt</span>
     </div>
   </div>
 </section>
