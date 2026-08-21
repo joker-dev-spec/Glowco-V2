@@ -11,10 +11,14 @@ if (is_logged_in()) {
     try {
         $conn = get_db_connection();
         $uid  = (int)$_SESSION['user_id'];
-        $res  = $conn->query("SELECT COUNT(*) AS c FROM cart_items WHERE user_id = {$uid}");
-        if ($res) $cart_count = (int)$res->fetch_assoc()['c'];
-        $res  = $conn->query("SELECT COUNT(*) AS c FROM wishlist WHERE user_id = {$uid}");
-        if ($res) $wishlist_count = (int)$res->fetch_assoc()['c'];
+        $stmt = $conn->prepare("SELECT COUNT(*) AS c FROM cart_items WHERE user_id = ?");
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $cart_count = (int)($stmt->get_result()->fetch_assoc()['c'] ?? 0);
+        $stmt = $conn->prepare("SELECT COUNT(*) AS c FROM wishlist WHERE user_id = ?");
+        $stmt->bind_param("i", $uid);
+        $stmt->execute();
+        $wishlist_count = (int)($stmt->get_result()->fetch_assoc()['c'] ?? 0);
     } catch (Throwable $e) {}
 }
 function badge_count(int $n): string {
