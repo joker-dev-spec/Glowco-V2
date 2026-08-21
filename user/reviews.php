@@ -6,17 +6,22 @@ require_once ROOT_PATH . 'includes/user_auth.php';
 $conn    = get_db_connection();
 $user_id = $_SESSION['user_id'];
 
-$stmt = $conn->prepare(
-    "SELECT r.id, r.rating, r.comment, r.created_at,
-            p.id AS product_id, p.name AS product_name, p.image_path
-     FROM reviews r
-     JOIN products p ON r.product_id = p.id
-     WHERE r.user_id = ?
-     ORDER BY r.created_at DESC"
-);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+try {
+    $stmt = $conn->prepare(
+        "SELECT r.id, r.rating, r.comment, r.created_at,
+                p.id AS product_id, p.name AS product_name, p.image_path
+         FROM reviews r
+         JOIN products p ON r.product_id = p.id
+         WHERE r.user_id = ?
+         ORDER BY r.created_at DESC"
+    );
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+} catch (Throwable $e) {
+    // Reviews table not present yet (run database/migrate_reviews.sql)
+    $reviews = [];
+}
 
 $page_title = 'My Reviews — Glow Co.';
 include ROOT_PATH . 'includes/header.php';
