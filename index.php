@@ -10,6 +10,23 @@ $featured = $conn->query(
     "SELECT id, name, price, image_path, description, stock FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 8"
 );
 
+$home_reviews = [];
+try {
+    $hr = $conn->prepare(
+        "SELECT r.rating, r.comment, r.created_at, u.name AS user_name, p.name AS product_name
+         FROM reviews r
+         JOIN users u ON r.user_id = u.id
+         JOIN products p ON r.product_id = p.id
+         WHERE r.comment IS NOT NULL AND r.comment <> ''
+         ORDER BY r.created_at DESC
+         LIMIT 3"
+    );
+    $hr->execute();
+    $home_reviews = $hr->get_result()->fetch_all(MYSQLI_ASSOC);
+} catch (Throwable $e) {
+    $home_reviews = [];
+}
+
 $page_title = 'Glow Co. — Premium Body Creams';
 // header.php outputs <header class="scrolled"> — strip scrolled for homepage so the transition fires
 include ROOT_PATH . 'includes/header.php';
@@ -67,21 +84,31 @@ $csrf = generate_csrf_token();
     <h2 class="section-title">What our customers say</h2>
   </div>
   <div class="testimonial-grid">
-    <div class="testimonial-card">
-      <div class="stars">★★★★★</div>
-      <p>"Completely transformed my skin. I've never felt this moisturized after just one week."</p>
-      <span class="reviewer">— Amara O., Lagos</span>
-    </div>
-    <div class="testimonial-card">
-      <div class="stars">★★★★★</div>
-      <p>"Everyone asks what I'm using. Worth every kobo."</p>
-      <span class="reviewer">— Chidinma E., Abuja</span>
-    </div>
-    <div class="testimonial-card">
-      <div class="stars">★★★★★</div>
-      <p>"Finally a body cream that doesn't break me out. Exactly what sensitive skin needs."</p>
-      <span class="reviewer">— Fatima B., Port Harcourt</span>
-    </div>
+    <?php if (!empty($home_reviews)): ?>
+      <?php foreach ($home_reviews as $rev): ?>
+        <div class="testimonial-card">
+          <div class="stars"><?= str_repeat('★', (int)$rev['rating']) . str_repeat('☆', 5 - (int)$rev['rating']) ?></div>
+          <p>"<?= htmlspecialchars($rev['comment']) ?>"</p>
+          <span class="reviewer">— <?= htmlspecialchars($rev['user_name']) ?>, on <?= htmlspecialchars($rev['product_name']) ?></span>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Completely transformed my skin. I've never felt this moisturized after just one week."</p>
+        <span class="reviewer">— Amara O., Lagos</span>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Everyone asks what I'm using. Worth every kobo."</p>
+        <span class="reviewer">— Chidinma E., Abuja</span>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Finally a body cream that doesn't break me out. Exactly what sensitive skin needs."</p>
+        <span class="reviewer">— Fatima B., Port Harcourt</span>
+      </div>
+    <?php endif; ?>
   </div>
 </section>
 
