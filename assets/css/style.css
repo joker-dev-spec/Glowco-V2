@@ -230,7 +230,7 @@ main { flex: 1; }
 
 /* ─── TESTIMONIALS ────────────────────────────────────────────────── */
 .testimonials { padding: 80px 40px; background: linear-gradient(135deg, #FFF0F5 0%, var(--ivory) 100%); }
-.testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+.testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
 .testimonial-card { background: var(--white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); }
 .testimonial-card .stars { font-size: 1.1rem; color: var(--gold); margin-bottom: 16px; letter-spacing: 2px; }
 .testimonial-card p { font-size: .9rem; color: var(--text-soft); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
@@ -337,13 +337,13 @@ body.admin-layout { background: #fdf0f4; }
 
 /* ─── ABOUT ───────────────────────────────────────────────────────── */
 .about-section { padding: 64px 40px; max-width: 1000px; margin: 0 auto; }
-.journey-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; text-align: center; }
+.journey-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 24px; margin-top: 40px; text-align: center; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-top: 40px; }
 .about-text h2 { font-size: 2rem; color: var(--plum); margin-bottom: 16px; }
 .about-text p { color: var(--text-soft); line-height: 1.8; margin-bottom: 16px; }
 .about-img-placeholder { background: linear-gradient(135deg, var(--pink-soft) 0%, var(--cream) 100%); border-radius: var(--radius-lg); aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .about-img-placeholder img { width: 100%; height: 100%; object-fit: cover; }
-.values-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+.values-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 24px; }
 .value-item { background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); text-align: center; }
 .value-item .icon { font-size: 2rem; margin-bottom: 12px; }
 .value-item h4 { font-size: 1rem; color: var(--plum); margin-bottom: 8px; }
@@ -810,6 +810,8 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   .footer-brand { grid-column: 1 / -1; }
   .about-grid { grid-template-columns: 1fr; }
   .journey-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-section { padding: 56px 20px; }
+  .testimonial-card { padding: 24px; }
   .social-cards { grid-template-columns: 1fr; }
   .cart-page { padding: 100px 20px 60px; }
   .cart-layout { grid-template-columns: 1fr; }
