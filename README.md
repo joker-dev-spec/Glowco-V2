@@ -44,14 +44,11 @@ DB `glowco_db`). To override, set these env vars:
 
 Copy `.env.example` → `.env` (or set them in the hosting dashboard).
 
-## Default login
+## Admin account
 
-The seed SQL creates an admin account:
-
-- **Email:** `admin@example.com`
-- **Password:** `REDACTED`
-
-**Change this password before going live.**
+No default admin credentials are shipped. After importing the schema, create your
+own admin user (hashed with PHP's `password_hash()`) and delete any seed account.
+Never commit or publish credentials.
 
 ## Deploy to Railway (recommended)
 
