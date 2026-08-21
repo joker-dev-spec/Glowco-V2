@@ -30,7 +30,7 @@ include ROOT_PATH . 'includes/header.php';
   </div>
 </section>
 
-<section class="about-section">
+<section class="about-section journey-section">
   <h2 style="text-align:center;margin-bottom:32px;">Our Journey</h2>
   <div class="values-list">
     <div class="value-item">
