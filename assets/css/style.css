@@ -231,6 +231,11 @@ main { flex: 1; }
 /* ─── TESTIMONIALS ────────────────────────────────────────────────── */
 .testimonials { padding: 80px 40px; background: linear-gradient(135deg, #FFF0F5 0%, var(--ivory) 100%); }
 .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+.testimonial-scroller { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x proximity; padding: 4px 4px 16px; -webkit-overflow-scrolling: touch; }
+.testimonial-scroller .testimonial-card { flex: 0 0 320px; scroll-snap-align: start; }
+.testimonial-scroller::-webkit-scrollbar { height: 6px; }
+.testimonial-scroller::-webkit-scrollbar-track { background: var(--pink-soft); border-radius: 3px; }
+.testimonial-scroller::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
 .testimonial-card { background: var(--white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); }
 .testimonial-card .stars { font-size: 1.1rem; color: var(--gold); margin-bottom: 16px; letter-spacing: 2px; }
 .testimonial-card p { font-size: .9rem; color: var(--text-soft); line-height: 1.7; margin-bottom: 16px; font-style: italic; }

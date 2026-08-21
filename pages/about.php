@@ -94,7 +94,7 @@ include ROOT_PATH . 'includes/header.php';
 
 <section class="about-section">
   <h2 style="text-align:center;margin-bottom:32px;">What Our Customers Say</h2>
-  <div class="testimonial-grid">
+  <div class="testimonial-scroller">
     <div class="testimonial-card">
       <div class="stars">★★★★★</div>
       <p>"I've tried so many body creams and nothing compares to Glow Co. My skin has never felt this soft and nourished. I'm a customer for life!"</p>
