@@ -828,14 +828,14 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   .product-detail { grid-template-columns: 1fr; gap: 32px; padding: 0 20px 80px; }
   .profile-layout { grid-template-columns: 1fr; }
   .admin-main { padding: 0 1rem; }
+  .admin-nav { padding: 0 1rem; }
+  .admin-nav__inner { height: auto; flex-wrap: wrap; gap: .5rem 1rem; padding: .6rem 0; }
+  .admin-nav ul { flex-wrap: wrap; }
 }
 @media (max-width: 640px) {
   .cart-item { flex-wrap: wrap; }
   .cart-item img { width: 64px; height: 64px; }
   .cart-item__subtotal { margin-left: auto; }
-  .admin-nav { padding: 0 1rem; }
-  .admin-nav__inner { height: auto; flex-wrap: wrap; gap: .5rem 1rem; padding: .6rem 0; }
-  .admin-nav ul { flex-wrap: wrap; }
 }
 @media (hover: none) {
   .product-overlay { display: none; }

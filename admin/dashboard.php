@@ -61,7 +61,7 @@ include ROOT_PATH . 'includes/admin_header.php';
     </div>
   <?php endif; ?>
 
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
     <h2 style="font-size:1.3rem;color:var(--plum);">Recent Orders</h2>
     <a href="<?= BASE_URL ?>admin/orders.php" class="btn-primary" style="font-size:.82rem;padding:8px 18px;">View all</a>
   </div>
