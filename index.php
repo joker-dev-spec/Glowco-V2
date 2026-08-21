@@ -160,39 +160,6 @@ $csrf = generate_csrf_token();
   </div>
 </section>
 
-<section class="instagram-section">
-  <div class="section-header">
-    <p class="section-eyebrow">Stay Connected</p>
-    <h2 class="section-title">Follow Us @okunborjanet85</h2>
-  </div>
-  <div class="instagram-grid">
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-    <a href="https://www.instagram.com/okunborjanet85/" target="_blank" rel="noopener" class="instagram-item">
-      <span class="ig-icon">📷</span>
-      <span class="ig-label">Follow on Instagram</span>
-    </a>
-  </div>
-</section>
-
 <?php include ROOT_PATH . 'includes/footer.php'; ?>
 
 <script>
