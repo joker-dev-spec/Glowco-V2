@@ -11,7 +11,7 @@ try {
         "SELECT r.id, r.rating, r.comment, r.created_at,
                 p.id AS product_id, p.name AS product_name, p.image_path
          FROM reviews r
-         JOIN products p ON r.product_id = p.id
+         LEFT JOIN products p ON r.product_id = p.id
          WHERE r.user_id = ?
          ORDER BY r.created_at DESC"
     );
@@ -35,35 +35,43 @@ include ROOT_PATH . 'includes/header.php';
     <div class="empty-wish">
       <div style="font-size:4rem;margin-bottom:16px;">⭐</div>
       <h2>No reviews yet</h2>
-      <p style="margin-bottom:28px;font-size:.95rem;">You haven't reviewed any products yet. Browse products and share your experience!</p>
-      <a href="<?= BASE_URL ?>pages/shop.php" class="btn-primary">Browse products</a>
+      <p style="margin-bottom:28px;font-size:.95rem;">You haven't reviewed any products yet. Share your experience or send us a suggestion!</p>
+      <a href="<?= BASE_URL ?>user/write_review.php" class="btn-primary">Write a Review</a>
     </div>
   <?php else: ?>
     <p class="sub"><?= count($reviews) ?> review<?= count($reviews) > 1 ? 's' : '' ?></p>
+    <a href="<?= BASE_URL ?>user/write_review.php" class="btn-primary"
+       style="background:transparent;border:1.5px solid var(--pink);color:var(--plum);display:inline-block;margin-top:12px;">Write a Review</a>
     <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
       <?php foreach ($reviews as $rev): ?>
         <div style="background:var(--white);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:flex-start;">
-          <?php if (!empty($rev['image_path'])): ?>
+          <?php if (!empty($rev['product_id'])): ?>
             <a href="<?= BASE_URL ?>pages/product.php?id=<?= $rev['product_id'] ?>">
               <img src="<?= BASE_URL . htmlspecialchars($rev['image_path']) ?>"
                    alt="<?= htmlspecialchars($rev['product_name']) ?>"
                    style="width:64px;height:64px;object-fit:cover;border-radius:10px;background:var(--pink-soft);flex-shrink:0;">
             </a>
           <?php else: ?>
-            <div style="width:64px;height:64px;background:var(--pink-soft);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🧴</div>
+            <div style="width:64px;height:64px;background:var(--pink-soft);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">💡</div>
           <?php endif; ?>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-              <a href="<?= BASE_URL ?>pages/product.php?id=<?= $rev['product_id'] ?>"
-                 style="font-weight:600;color:var(--plum);font-size:.95rem;text-decoration:none;">
-                <?= htmlspecialchars($rev['product_name']) ?>
-              </a>
+              <?php if (!empty($rev['product_id'])): ?>
+                <a href="<?= BASE_URL ?>pages/product.php?id=<?= $rev['product_id'] ?>"
+                   style="font-weight:600;color:var(--plum);font-size:.95rem;text-decoration:none;">
+                  <?= htmlspecialchars($rev['product_name']) ?>
+                </a>
+              <?php else: ?>
+                <span style="font-weight:600;color:var(--plum);font-size:.95rem;">General suggestion</span>
+              <?php endif; ?>
               <span style="font-size:.78rem;color:var(--text-soft);"><?= date('M j, Y', strtotime($rev['created_at'])) ?></span>
             </div>
             <div style="font-size:.95rem;color:#f5a623;letter-spacing:1px;margin:4px 0;">
-              <?php for ($s = 1; $s <= 5; $s++): ?>
-                <?= $s <= $rev['rating'] ? '★' : '☆' ?>
-              <?php endfor; ?>
+              <?php if ((int)$rev['rating'] > 0): ?>
+                <?php for ($s = 1; $s <= 5; $s++): ?>
+                  <?= $s <= $rev['rating'] ? '★' : '☆' ?>
+                <?php endfor; ?>
+              <?php endif; ?>
             </div>
             <?php if (!empty($rev['comment'])): ?>
               <p style="color:var(--text-soft);font-size:.88rem;line-height:1.6;margin:0;"><?= nl2br(htmlspecialchars($rev['comment'])) ?></p>

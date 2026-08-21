@@ -92,7 +92,7 @@ CREATE TABLE rate_limits (
 
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
+    product_id INT DEFAULT NULL,
     user_id INT NOT NULL,
     rating TINYINT NOT NULL,
     comment TEXT,

@@ -167,28 +167,11 @@ if ($cat !== '') {
   <?php endif; ?>
 
   <?php if (is_logged_in() && !$user_reviewed): ?>
-    <form id="reviewForm" style="padding:20px;border:1px solid var(--pink-soft);border-radius:14px;display:flex;flex-direction:column;gap:14px;">
-      <h3 style="font-size:1.1rem;color:var(--plum);margin:0;">Write a Review</h3>
-      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
-      <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-
-      <div class="review-rating-select" style="display:flex;gap:6px;">
-        <button type="button" class="star-btn" data-val="1" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ddd;">★</button>
-        <button type="button" class="star-btn" data-val="2" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ddd;">★</button>
-        <button type="button" class="star-btn" data-val="3" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ddd;">★</button>
-        <button type="button" class="star-btn" data-val="4" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ddd;">★</button>
-        <button type="button" class="star-btn" data-val="5" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ddd;">★</button>
-      </div>
-      <input type="hidden" name="rating" id="reviewRating" value="0">
-
-      <textarea name="comment" rows="4" placeholder="Share your thoughts about this product…"
-                style="padding:12px;border:1.5px solid var(--pink-soft);border-radius:12px;font-size:.9rem;resize:vertical;font-family:inherit;"></textarea>
-
-      <button type="submit" class="btn-primary" style="align-self:flex-start;">Submit Review</button>
-      <div id="reviewMsg" style="font-size:.85rem;display:none;"></div>
-    </form>
+    <a href="<?= BASE_URL ?>user/write_review.php?product=<?= (int)$product['id'] ?>" class="btn-primary" style="display:inline-block;">Write a Review</a>
   <?php elseif (is_logged_in() && $user_reviewed): ?>
-    <p style="color:var(--text-soft);font-size:.9rem;">You've already reviewed this product.</p>
+    <p style="color:var(--text-soft);font-size:.9rem;">You've already reviewed this product. <a href="<?= BASE_URL ?>user/write_review.php?product=<?= (int)$product['id'] ?>" style="color:var(--pink-deep);">Update your review</a></p>
+  <?php else: ?>
+    <a href="<?= BASE_URL ?>auth/login.php" class="btn-primary" style="display:inline-block;">Log in to review</a>
   <?php endif; ?>
 </section>
 
