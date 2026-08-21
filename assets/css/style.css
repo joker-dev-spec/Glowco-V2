@@ -820,31 +820,29 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   .floating-search__submit { padding: 10px 16px; font-size: .8rem; }
   .tracking-page { padding: 120px 20px 60px; }
   .quiz-page { padding: 120px 20px 60px; }
-  .admin-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .stat-cards { grid-template-columns: repeat(2, 1fr); }
   .page-hero { padding: 120px 20px 48px; }
   .wishlist-page { padding: 100px 20px 60px; }
   .user-dashboard { padding: 100px 20px 60px; }
   .product-detail { grid-template-columns: 1fr; gap: 32px; padding: 0 20px 80px; }
   .profile-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
   .admin-main { padding: 0 1rem; margin: 1.25rem auto; }
   .admin-main h1 { font-size: 1.3rem; margin-bottom: 1rem; }
   .admin-main .btn-primary { padding: 10px 20px; font-size: .78rem; }
-  .stat-cards { gap: .75rem; margin-bottom: 1.5rem; }
   .stat-card { padding: 1rem .75rem; }
   .stat-card h3 { font-size: .68rem; margin-bottom: .4rem; }
   .stat-card p { font-size: 1.35rem; }
-  .admin-table { font-size: .78rem; }
+  .admin-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: .78rem; border-radius: var(--radius); }
   .admin-table th { padding: .55rem .65rem; font-size: .65rem; }
   .admin-table td { padding: .6rem .65rem; }
-  .admin-table td a { padding: .22rem .5rem; font-size: .72rem; }
+  .admin-table td a { padding: .22rem .5rem; font-size: .72rem; white-space: nowrap; }
   .admin-nav { padding: 0 .75rem; }
   .admin-nav__brand { font-size: 1.05rem; }
-  .admin-nav ul a { padding: .35rem .55rem; font-size: .78rem; }
-  .admin-nav ul { gap: .15rem; }
-  .admin-nav { padding: 0 1rem; }
   .admin-nav__inner { height: auto; flex-wrap: wrap; gap: .5rem 1rem; padding: .6rem 0; }
-  .admin-nav ul { flex-wrap: wrap; }
+  .admin-nav ul { flex-wrap: wrap; gap: .15rem; }
+  .admin-nav ul a { padding: .35rem .55rem; font-size: .78rem; }
 }
 @media (max-width: 640px) {
   .cart-item { flex-wrap: wrap; }
