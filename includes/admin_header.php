@@ -12,7 +12,7 @@ $flash = get_flash();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $page_title ?? 'Glowco Admin' ?></title>
   <link rel="icon" type="image/jpeg" href="<?= BASE_URL ?>assets/images/logo.jpeg">
-  <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css?v=<?= filemtime(ROOT_PATH . 'assets/css/style.css') ?>">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body class="admin-layout">
