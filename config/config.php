@@ -11,8 +11,12 @@ if (!defined('BASE_URL')) {
     if ($envBase) {
         define('BASE_URL', rtrim($envBase, '/') . '/');
     } elseif (!empty($_SERVER['HTTP_HOST'])) {
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        define('BASE_URL', $scheme . '://' . $_SERVER['HTTP_HOST'] . '/');
+        $host = $_SERVER['HTTP_HOST'];
+        $isLocal = str_starts_with($host, 'localhost') || str_starts_with($host, '127.0.0.1');
+        // Railway terminates TLS at its proxy, so $_SERVER['HTTPS'] is unset
+        // there; treat every non-local host as HTTPS.
+        $scheme = $isLocal ? 'http' : 'https';
+        define('BASE_URL', $scheme . '://' . $host . '/');
     } else {
         define('BASE_URL', 'http://localhost/Glowco-V2/');
     }
