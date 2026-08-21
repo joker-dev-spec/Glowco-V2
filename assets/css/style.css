@@ -795,7 +795,6 @@ footer { background: var(--plum); padding: 64px 40px 0; margin-top: auto; }
   header nav.mobile-open { display: block; }
   header nav ul { flex-direction: column; gap: 4px; align-items: stretch; }
   header nav ul li a { display: block; padding: 12px 16px; border-radius: var(--radius); font-size: .95rem; }
-}
   #header { padding: 16px 20px; }
   #header.scrolled { padding: 12px 20px; }
   .hero { padding: 100px 20px 60px; }
