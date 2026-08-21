@@ -42,16 +42,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!$error) {
-            $stmt = $conn->prepare(
-                "INSERT INTO reviews (product_id, user_id, rating, comment)
-                 VALUES (?, ?, ?, ?)
-                 ON DUPLICATE KEY UPDATE rating = VALUES(rating), comment = VALUES(comment), created_at = CURRENT_TIMESTAMP"
-            );
-            $stmt->bind_param("iiis", $product_id, $user_id, $rating, $comment);
-            $stmt->execute();
-            set_flash('success', $product_id !== null ? 'Thanks! Your review has been posted.' : 'Thanks! Your suggestion has been received.');
-            header('Location: ' . BASE_URL . 'user/reviews.php');
-            exit();
+            try {
+                $chk2 = $conn->query("SHOW TABLES LIKE 'reviews'");
+                if (!$chk2 || !$chk2->num_rows) {
+                    throw new RuntimeException('The reviews table does not exist yet. An admin must open admin/migrate.php once to create it.');
+                }
+                $stmt = $conn->prepare(
+                    "INSERT INTO reviews (product_id, user_id, rating, comment)
+                     VALUES (?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE rating = VALUES(rating), comment = VALUES(comment), created_at = CURRENT_TIMESTAMP"
+                );
+                $stmt->bind_param("iiis", $product_id, $user_id, $rating, $comment);
+                $stmt->execute();
+                set_flash('success', $product_id !== null ? 'Thanks! Your review has been posted.' : 'Thanks! Your suggestion has been received.');
+                header('Location: ' . BASE_URL . 'user/reviews.php');
+                exit();
+            } catch (Throwable $e) {
+                $error = 'Could not save your review: ' . $e->getMessage();
+            }
         }
 
         $selected_product = $product_id ?? 0;
